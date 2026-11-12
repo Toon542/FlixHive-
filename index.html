@@ -1,0 +1,761 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlixHive // 2050+ Ultimate 18-Feature Cinematic Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        hive: {
+                            bg: '#030712',
+                            card: 'rgba(17, 24, 39, 0.75)',
+                            border: 'rgba(239, 68, 68, 0.3)',
+                            red: '#ef4444',
+                            cyan: '#06b6d4',
+                            purple: '#a855f7'
+                        }
+                    },
+                    animation: {
+                        'spin-slow': 'spin 20s linear infinite',
+                        'scan': 'scanLine 2s linear infinite'
+                    },
+                    keyframes: {
+                        scanLine: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(1000%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts for Dynamic Genre Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Cinzel:wght@700&family=Creepster&family=Dancing+Script:wght@700&family=Fredoka:wght@600&family=Orbitron:wght@700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .genre-scroll::-webkit-scrollbar, .film-strip::-webkit-scrollbar { height: 6px; }
+        .genre-scroll::-webkit-scrollbar-track, .film-strip::-webkit-scrollbar-track { background: #030712; border-radius: 10px; }
+        .genre-scroll::-webkit-scrollbar-thumb, .film-strip::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 10px; }
+        .genre-scroll::-webkit-scrollbar-thumb:hover, .film-strip::-webkit-scrollbar-thumb:hover { background: #ef4444; }
+
+        .font-horror { font-family: 'Creepster', cursive; letter-spacing: 1px; }
+        .font-scifi { font-family: 'Orbitron', sans-serif; }
+        .font-fantasy { font-family: 'Cinzel', serif; }
+        .font-action { font-family: 'Black Ops One', cursive; }
+        .font-romance { font-family: 'Dancing Script', cursive; font-size: 1.15rem; }
+        .font-comedy { font-family: 'Fredoka', sans-serif; }
+        .font-default { font-family: system-ui, -apple-system, sans-serif; }
+
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .neon-glow-red { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+        .neon-glow-hover:hover { box-shadow: 0 0 25px rgba(239, 68, 68, 0.6); border-color: rgba(239, 68, 68, 0.8); }
+
+        .card-3d-wrapper { perspective: 1000px; }
+        .card-3d { transition: transform 0.1s ease-out, box-shadow 0.3s ease; transform-style: preserve-3d; }
+
+        .film-strip-border { border-left: 4px dashed rgba(239, 68, 68, 0.5); border-right: 4px dashed rgba(239, 68, 68, 0.5); }
+
+        .hero-slide { display: none; }
+        .hero-slide.active { display: block; animation: fadeIn 0.8s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0.3; } to { opacity: 1; } }
+
+        .portal-warp { animation: warpEffect 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes warpEffect {
+            0% { transform: scale(0.95); opacity: 0; filter: blur(8px) hue-rotate(45deg); }
+            100% { transform: scale(1); opacity: 1; filter: blur(0) hue-rotate(0deg); }
+        }
+
+        .starfield {
+            background-image: radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                              radial-gradient(2px 2px at 40px 70px, #ef4444, rgba(0,0,0,0)),
+                              radial-gradient(1px 1px at 90px 40px, #06b6d4, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans min-h-screen relative">
+
+    <!-- 1. HIVE OS Boot Screen -->
+    <div id="hive-boot-screen" class="fixed inset-0 z-50 bg-gray-950 flex flex-col justify-between p-6 sm:p-12 font-mono transition-opacity duration-700">
+        <div class="flex justify-between items-center text-xs sm:text-sm text-red-500">
+            <div>[SYS_ID: HIVE-OS-2050.18X]</div>
+            <div id="boot-time" class="animate-pulse">TIME: 2050.11.12_23:56</div>
+        </div>
+        <div class="max-w-2xl mx-auto w-full space-y-4">
+            <div class="flex items-center space-x-3 text-red-500">
+                <i data-lucide="cpu" class="w-8 h-8 animate-spin"></i>
+                <h1 class="text-xl sm:text-3xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">INITIALIZING HIVE OS...</h1>
+            </div>
+            <div id="terminal-logs" class="glass-panel p-4 rounded-lg text-xs sm:text-sm h-44 overflow-y-auto space-y-1 text-gray-300 border border-red-500/30">
+                <p class="text-red-400">&gt; Loading quantum neural matrices & 18 cinematic sub-systems...</p>
+            </div>
+            <div class="space-y-1">
+                <div class="flex justify-between text-xs text-red-400">
+                    <span id="boot-status-text">Synchronizing Holographic Grid & Voice Deck...</span>
+                    <span id="boot-percentage">0%</span>
+                </div>
+                <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-red-500/30">
+                    <div id="boot-progress-bar" class="bg-gradient-to-r from-red-600 to-orange-500 h-full w-0 transition-all duration-200"></div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-xs text-gray-500">SECURE 18-FEATURE PROTOCOL // AUTHORIZED ACCESS ONLY</div>
+    </div>
+
+    <!-- Main App Wrapper -->
+    <div id="main-app" class="opacity-0 transition-opacity duration-1000 flex flex-col min-h-screen">
+
+        <!-- Header -->
+        <header class="border-b border-gray-800/80 bg-gray-900/70 backdrop-blur-md sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center justify-between w-full sm:w-auto">
+                    <span class="text-2xl font-extrabold tracking-wider text-red-500 drop-shadow cursor-pointer" onclick="switchMainView('hub')">Flix<span class="text-white">Hive</span></span>
+                    <div class="flex items-center gap-2 sm:hidden">
+                        <button onclick="toggleVoiceDeck()" class="bg-gray-800 border border-cyan-500/40 text-cyan-400 p-2 rounded-lg"><i data-lucide="mic" class="w-5 h-5"></i></button>
+                        <button onclick="openCinematicRadar()" class="bg-gray-800 border border-purple-500/40 text-purple-400 p-2 rounded-lg"><i data-lucide="radar" class="w-5 h-5"></i></button>
+                        <button onclick="toggleHoloCommandCenter()" class="bg-gray-800 border border-red-500/40 text-red-500 p-2 rounded-lg"><i data-lucide="command" class="w-5 h-5"></i></button>
+                    </div>
+                </div>
+                
+                <div class="hidden lg:flex items-center gap-2 text-xs font-semibold overflow-x-auto max-w-2xl py-1">
+                    <button onclick="switchMainView('hub')" id="navHub" class="px-3 py-1.5 rounded-lg bg-red-600 text-white transition neon-glow-red whitespace-nowrap">Hub</button>
+                    <button onclick="switchMainView('galaxy')" id="navGalaxy" class="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:text-white transition whitespace-nowrap">🌌 Galaxy</button>
+                    <button onclick="switchMainView('timeline')" id="navTimeline" class="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:text-white transition whitespace-nowrap">⏳ Time-Travel</button>
+                    <button onclick="switchMainView('universe')" id="navUniverse" class="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:text-white transition whitespace-nowrap">🪐 My Universe</button>
+                    <button onclick="openCinematicIdModal()" class="px-3 py-1.5 rounded-lg bg-gray-800 text-cyan-300 hover:text-white transition whitespace-nowrap border border-cyan-500/30">👤 ID</button>
+                    <button onclick="openMemoryVaultModal()" class="px-3 py-1.5 rounded-lg bg-gray-800 text-purple-300 hover:text-white transition whitespace-nowrap border border-purple-500/30">📜 Vault</button>
+                    <button onclick="openAchievementModal()" class="px-3 py-1.5 rounded-lg bg-gray-800 text-yellow-300 hover:text-white transition whitespace-nowrap border border-yellow-500/30">🏆 Badges</button>
+                </div>
+
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <div class="relative flex-1 sm:w-60">
+                        <input type="text" id="searchInput" placeholder="Search movies..." class="w-full bg-gray-800/90 border border-gray-700 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-red-500 transition shadow-inner">
+                    </div>
+                    <button onclick="performSearch()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition neon-glow-red">Go</button>
+                    <button onclick="toggleVoiceDeck()" class="hidden sm:block bg-gray-800 hover:bg-gray-700 text-cyan-400 border border-cyan-500/30 p-2 rounded-full text-sm transition" title="Voice Command">🎙️</button>
+                    <button onclick="openCinematicRadar()" class="hidden sm:block bg-gray-800 hover:bg-gray-700 text-purple-400 border border-purple-500/30 p-2 rounded-full text-sm transition" title="Radar">📡</button>
+                    <button onclick="toggleHoloCommandCenter()" class="hidden sm:block bg-gray-800 hover:bg-gray-700 text-red-400 border border-red-500/30 p-2 rounded-full text-sm transition" title="Command Center">⚙️</button>
+                    <button id="themeToggleBtn" onclick="toggleTheme()" class="bg-gray-800 hover:bg-gray-700 text-gray-200 p-2.5 rounded-full text-sm transition">🌙</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Views Container -->
+        <div id="dynamicViewContainer" class="flex-1 portal-warp">
+
+            <!-- VIEW 1: HUB -->
+            <div id="viewHub" class="space-y-6">
+                <!-- Hero Slider -->
+                <section class="relative w-full h-[450px] sm:h-[500px] bg-gray-900 overflow-hidden shadow-2xl mb-6">
+                    <div id="heroSliderContainer" class="w-full h-full relative"></div>
+                    <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-red-600 text-white p-3 rounded-full transition z-20 backdrop-blur">❮</button>
+                    <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-red-600 text-white p-3 rounded-full transition z-20 backdrop-blur">❯</button>
+                    <div id="sliderDots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20"></div>
+                </section>
+
+                <main class="max-w-7xl mx-auto px-4 py-4 space-y-6">
+                    <!-- Motion Reactor & Surprise Me -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button onclick="surpriseMe()" class="glass-panel hover:bg-gray-800/80 p-4 rounded-xl flex items-center justify-between transition group neon-glow-hover">
+                            <div class="text-left">
+                                <h3 class="font-bold text-white text-sm sm:text-base flex items-center gap-2">🎲 Surprise Me!</h3>
+                                <p class="text-xs text-gray-300 mt-0.5">Pick a random masterwork instantly.</p>
+                            </div>
+                            <span class="bg-red-600 text-white p-2.5 rounded-lg group-hover:scale-110 transition neon-glow-red">✨</span>
+                        </button>
+
+                        <div class="glass-panel p-4 rounded-xl flex flex-col justify-between">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-bold text-white text-sm sm:text-base flex items-center gap-2">🎭 Motion Reactor (Emotions)</h3>
+                                <span class="text-xs text-red-400 font-medium">Select Vibe</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="filterByMood('happy')" class="bg-gray-800/90 hover:bg-red-600 text-gray-200 text-xs py-1.5 px-2 rounded-lg transition font-medium">😊 Happy</button>
+                                <button onclick="filterByMood('romantic')" class="bg-gray-800/90 hover:bg-red-600 text-gray-200 text-xs py-1.5 px-2 rounded-lg transition font-medium">💖 Romantic</button>
+                                <button onclick="filterByMood('scary')" class="bg-gray-800/90 hover:bg-red-600 text-gray-200 text-xs py-1.5 px-2 rounded-lg transition font-medium">😱 Scary</button>
+                                <button onclick="filterByMood('action')" class="bg-gray-800/90 hover:bg-red-600 text-gray-200 text-xs py-1.5 px-2 rounded-lg transition font-medium">🔥 Excited</button>
+                                <button onclick="filterByMood('scifi')" class="bg-gray-800/90 hover:bg-red-600 text-gray-200 text-xs py-1.5 px-2 rounded-lg transition font-medium">🚀 Sci-Fi</button>
+                                <button onclick="filterByMood('drama')" class="bg-gray-800/90 hover:bg-red-600 text-gray-200 text-xs py-1.5 px-2 rounded-lg transition font-medium">💧 Sad</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Neural Recommendations -->
+                    <div id="neuralRecSection" class="glass-panel p-4 rounded-xl border border-red-500/20">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-sm font-bold text-red-400 flex items-center gap-2"><i data-lucide="cpu" class="w-4 h-4"></i> Neural AI Recommendations</h3>
+                        </div>
+                        <div id="neuralRecGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="glass-panel p-4 rounded-xl flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <button onclick="filterLatest()" id="latestTabBtn" class="px-4 py-1.5 rounded-lg bg-gray-800 text-gray-200 text-sm font-medium transition">🔥 Latest Updates</button>
+                            <button onclick="resetAllFilters()" class="px-4 py-1.5 rounded-lg bg-gray-800 text-gray-200 text-sm font-medium transition">🔄 Reset All</button>
+                        </div>
+                        <div class="flex items-center gap-4 flex-wrap">
+                            <select id="langFilter" onchange="filterByLanguage(this.value)" class="bg-gray-800 border border-gray-700 text-gray-200 text-sm rounded-lg px-3 py-1.5 focus:outline-none">
+                                <option value="all">All Languages</option>
+                                <option value="english">English</option>
+                                <option value="hindi">Hindi</option>
+                                <option value="dual">Dual Audio</option>
+                            </select>
+                            <select id="yearFilter" onchange="filterByYear(this.value)" class="bg-gray-800 border border-gray-700 text-gray-200 text-sm rounded-lg px-3 py-1.5 focus:outline-none">
+                                <option value="all">All Years</option>
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2003">2003</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Genres -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Categories</span>
+                            <span id="activeGenreLabel" class="text-xs text-red-400 font-medium">Showing: All</span>
+                        </div>
+                        <div class="genre-scroll flex items-center gap-2 overflow-x-auto pb-3">
+                            <button onclick="filterCategory('all', this)" class="category-btn px-4 py-1.5 rounded-full bg-red-600 text-white text-sm font-medium whitespace-nowrap neon-glow-red">All</button>
+                            <button onclick="filterCategory('Action', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 text-gray-200 text-sm font-medium whitespace-nowrap">Action</button>
+                            <button onclick="filterCategory('Adventure', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 text-gray-200 text-sm font-medium whitespace-nowrap">Adventure</button>
+                            <button onclick="filterCategory('Comedy', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 text-gray-200 text-sm font-medium whitespace-nowrap">Comedy</button>
+                            <button onclick="filterCategory('Drama', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 text-gray-200 text-sm font-medium whitespace-nowrap">Drama</button>
+                            <button onclick="filterCategory('Horror', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 text-gray-200 text-sm font-medium whitespace-nowrap">Horror</button>
+                            <button onclick="filterCategory('Romance', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 text-gray-200 text-sm font-medium whitespace-nowrap">Romance</button>
+                            <button onclick="filterCategory('Sci-Fi', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 text-gray-200 text-sm font-medium whitespace-nowrap">Sci-Fi</button>
+                        </div>
+                    </div>
+
+                    <!-- Film Strip -->
+                    <div>
+                        <h2 class="text-lg font-bold mb-3 flex items-center gap-2 text-red-500">🎞️ Cinematic Film Strip Reel</h2>
+                        <div class="film-strip film-strip-border bg-gray-900/60 p-4 rounded-xl flex items-center gap-4 overflow-x-auto shadow-2xl">
+                            <div class="flex items-center gap-4" id="filmStripContainer"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2">
+                        <h2 class="text-xl font-semibold">Explore Movies Grid</h2>
+                        <button onclick="triggerInfiniteDiscovery()" class="text-xs bg-red-600/20 border border-red-500/40 text-red-400 px-3 py-1.5 rounded-lg hover:bg-red-600 hover:text-white transition flex items-center gap-1.5">
+                            <i data-lucide="infinity" class="w-4 h-4"></i> Infinite Discovery
+                        </button>
+                    </div>
+                    
+                    <!-- Movies Grid (Original 3 movies maintained) -->
+                    <div id="moviesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+                        <!-- Movie 1 -->
+                        <div class="card-3d-wrapper">
+                            <div class="movie-card card-3d glass-panel rounded-xl overflow-hidden hover:border-red-500/80 cursor-pointer group flex flex-col shadow-lg"
+                                 data-title="The Silent City" data-genre="Action, Thriller, Action Thriller, Dystopian" data-year="2024" data-rating="7.8" data-cat="Action / Thriller / Dystopian" data-desc="A gripping tale of survival in a futuristic dystopian city where silence is the only law." data-cast="John Doe, Jane Smith, Alex Mercer" data-director="Christopher Nolan Jr." data-runtime="2h 14m" data-language="English" data-poster="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=500&q=80" data-s1="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80" data-s2="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80" data-s3="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80" data-s4="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80" data-s5="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80" data-l480="LINK_480P" data-l720="LINK_720P" data-l1080="LINK_1080P" data-l2160="LINK_2160P">
+                                <div class="aspect-[2/3] bg-gray-800 relative overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                    <span class="absolute top-2 right-2 bg-black/70 text-xs px-2 py-1 rounded text-yellow-400">★ 7.8</span>
+                                    <button onclick="triggerMovieScanner(event, 'The Silent City')" class="absolute bottom-2 left-2 bg-red-600/80 hover:bg-red-600 text-white text-[10px] px-2 py-1 rounded font-mono flex items-center gap-1 z-10"><i data-lucide="scan" class="w-3 h-3"></i> Scan</button>
+                                </div>
+                                <div class="p-3"><h3 class="movie-title font-semibold text-sm truncate text-white">The Silent City</h3><p class="text-xs text-gray-400 mt-0.5">2024 • English</p></div>
+                            </div>
+                        </div>
+
+                        <!-- Movie 2 -->
+                        <div class="card-3d-wrapper">
+                            <div class="movie-card card-3d glass-panel rounded-xl overflow-hidden hover:border-red-500/80 cursor-pointer group flex flex-col shadow-lg"
+                                 data-latest="true" data-title="Pirates of the Caribbean: The Curse of the Black Pearl" data-genre="Action, Thriller, Fantasy, Adventure, Mystery" data-year="2003" data-rating="8.1" data-cat="Action / Thriller / Fantasy / Adventure / Mystery" data-desc="Captain Jack Sparrow embarks on an exciting adventure to reclaim his ship, the Black Pearl." data-cast="Johnny Depp, Orlando Bloom, Keira Knightley" data-director="Gore Verbinski" data-runtime="2h 23m" data-language="Dual Audio" data-poster="https://i.imgur.com/FDheuCz.jpeg" data-s1="https://i.imgur.com/HPYLg2i.jpeg" data-s2="https://i.imgur.com/2Vtt1Vh.jpeg" data-s3="https://i.imgur.com/38wvSWP.jpeg" data-s4="https://i.imgur.com/g2bRa8u.jpeg" data-s5="https://i.imgur.com/fxnjlUl.jpeg" data-l480="https://hubcloud.pw/video/jv1jhkjn6446v8z" data-l720="https://hubcloud.pw/video/oblsvlbphtzjja4" data-l1080="https://hubcloud.pw/video/bw6nhq7qpflbf1p" data-l2160="https://hubcloud.pw/video/efodyurfmzcmfkc">
+                                <div class="aspect-[2/3] bg-gray-800 relative overflow-hidden">
+                                    <img src="https://i.imgur.com/FDheuCz.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                    <span class="absolute top-2 right-2 bg-black/70 text-xs px-2 py-1 rounded text-yellow-400">★ 8.1</span>
+                                    <button onclick="triggerMovieScanner(event, 'Pirates of the Caribbean: The Curse of the Black Pearl')" class="absolute bottom-2 left-2 bg-red-600/80 hover:bg-red-600 text-white text-[10px] px-2 py-1 rounded font-mono flex items-center gap-1 z-10"><i data-lucide="scan" class="w-3 h-3"></i> Scan</button>
+                                </div>
+                                <div class="p-3"><h3 class="movie-title font-semibold text-sm truncate text-white">Pirates of the Caribbean</h3><p class="text-xs text-gray-400 mt-0.5">2003 • Dual Audio</p></div>
+                            </div>
+                        </div>
+
+                        <!-- Movie 3 -->
+                        <div class="card-3d-wrapper">
+                            <div class="movie-card card-3d glass-panel rounded-xl overflow-hidden hover:border-red-500/80 cursor-pointer group flex flex-col shadow-lg"
+                                 data-latest="true" data-title="Cyber Odyssey" data-genre="Sci-Fi, Cyberpunk, Space Opera, Sci-Fi Thriller" data-year="2025" data-rating="8.2" data-cat="Sci-Fi / Cyberpunk" data-desc="An epic journey through virtual reality, neon megacities, and deep cyberspace." data-cast="Keanu Reeves, Anya Taylor-Joy" data-director="Denis Villeneuve" data-runtime="2h 45m" data-language="Hindi" data-poster="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80" data-s1="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80" data-s2="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80" data-s3="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80" data-s4="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80" data-s5="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80" data-l480="LINK_480P" data-l720="LINK_720P" data-l1080="LINK_1080P" data-l2160="LINK_2160P">
+                                <div class="aspect-[2/3] bg-gray-800 relative overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                    <span class="absolute top-2 right-2 bg-black/70 text-xs px-2 py-1 rounded text-yellow-400">★ 8.2</span>
+                                    <button onclick="triggerMovieScanner(event, 'Cyber Odyssey')" class="absolute bottom-2 left-2 bg-red-600/80 hover:bg-red-600 text-white text-[10px] px-2 py-1 rounded font-mono flex items-center gap-1 z-10"><i data-lucide="scan" class="w-3 h-3"></i> Scan</button>
+                                </div>
+                                <div class="p-3"><h3 class="movie-title font-semibold text-sm truncate text-white">Cyber Odyssey</h3><p class="text-xs text-gray-400 mt-0.5">2025 • Hindi</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- VIEW 2: GALAXY -->
+            <div id="viewGalaxy" class="hidden max-w-7xl mx-auto px-4 py-8 space-y-6">
+                <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-purple-500/30 text-center space-y-3 starfield relative overflow-hidden">
+                    <div class="relative z-10 space-y-2 max-w-2xl mx-auto">
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-purple-500/20 text-purple-300 border border-purple-500/40">GALAXY NEBULA CLUSTER</span>
+                        <h1 class="text-3xl sm:text-4xl font-black text-white">Cinematic Galaxy Interface</h1>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="galaxySectorsContainer"></div>
+            </div>
+
+            <!-- VIEW 3: TIME TRAVEL -->
+            <div id="viewTimeline" class="hidden max-w-7xl mx-auto px-4 py-8 space-y-8">
+                <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-emerald-500/30 text-center space-y-4">
+                    <span class="px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">CHRONOLOGICAL WORMHOLE</span>
+                    <h1 class="text-3xl sm:text-4xl font-black text-white">Time Travel Cinema (1950 - 2050)</h1>
+                    <div class="max-w-xl mx-auto space-y-3 pt-4">
+                        <div class="flex justify-between text-sm font-mono text-red-400"><span>1950</span><span id="timelineDisplayYear" class="text-lg font-bold text-emerald-400">2024</span><span>2050</span></div>
+                        <input type="range" min="1950" max="2050" value="2024" oninput="updateTimelineYear(this.value)" class="w-full accent-red-500 cursor-pointer">
+                    </div>
+                </div>
+                <div id="timelineResultsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5"></div>
+            </div>
+
+            <!-- VIEW 4: UNIVERSE -->
+            <div id="viewUniverse" class="hidden max-w-7xl mx-auto px-4 py-8 space-y-8">
+                <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div class="space-y-2 text-center sm:text-left">
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-amber-500/20 text-amber-300 border border-amber-500/40">PERSONAL VAULT</span>
+                        <h1 class="text-3xl font-black text-white">My Universe Dashboard</h1>
+                    </div>
+                    <div class="flex space-x-4">
+                        <div class="glass-panel p-4 rounded-2xl text-center border border-red-500/30"><span id="statWatchedCount" class="text-2xl font-black text-red-500">0</span><span class="text-[10px] block text-gray-400 font-mono">WATCHED</span></div>
+                        <div class="glass-panel p-4 rounded-2xl text-center border border-amber-500/30"><span id="statUniverseCount" class="text-2xl font-black text-amber-400">0</span><span class="text-[10px] block text-gray-400 font-mono">SAVED</span></div>
+                    </div>
+                </div>
+                <div id="universeMoviesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="holoCommandModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="relative w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full border border-red-500/30 animate-spin-slow"></div>
+            <div class="w-20 h-20 rounded-full glass-panel flex flex-col items-center justify-center text-center cursor-pointer shadow-2xl z-10 border border-red-500/50" onclick="toggleHoloCommandCenter()">✕</div>
+            <button onclick="switchMainView('hub'); toggleHoloCommandCenter();" class="absolute -top-4 left-1/2 -translate-x-1/2 glass-panel px-4 py-2 rounded-full text-xs font-medium text-red-400 border border-red-400/50">Hub</button>
+            <button onclick="switchMainView('galaxy'); toggleHoloCommandCenter();" class="absolute top-1/4 -right-6 glass-panel px-4 py-2 rounded-full text-xs font-medium text-purple-400 border border-purple-400/50">Galaxy</button>
+            <button onclick="switchMainView('timeline'); toggleHoloCommandCenter();" class="absolute -bottom-4 right-6 glass-panel px-4 py-2 rounded-full text-xs font-medium text-emerald-400 border border-emerald-400/50">Time-Travel</button>
+            <button onclick="switchMainView('universe'); toggleHoloCommandCenter();" class="absolute -bottom-4 left-6 glass-panel px-4 py-2 rounded-full text-xs font-medium text-amber-400 border border-amber-400/50">My Universe</button>
+        </div>
+    </div>
+
+    <div id="movieScannerModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-2xl w-full rounded-2xl p-6 sm:p-8 relative border border-red-500/50 shadow-2xl overflow-hidden">
+            <div id="scannerLaser" class="absolute inset-x-0 h-1 bg-red-500 opacity-0 pointer-events-none transition-all"></div>
+            <button onclick="closeScannerModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">✕</button>
+            <div id="scannerModalContent" class="space-y-6"></div>
+        </div>
+    </div>
+
+    <div id="movieModal" class="fixed inset-0 bg-black/90 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div id="modalContainer" class="rounded-2xl max-w-3xl w-full p-6 relative max-h-[90vh] overflow-y-auto transition-all shadow-2xl glass-panel">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl font-bold">✕</button>
+            <div class="flex flex-col sm:flex-row gap-6">
+                <img id="modalPoster" class="w-full sm:w-44 h-64 object-cover rounded-xl border border-white/15 shadow-2xl flex-shrink-0">
+                <div class="flex flex-col justify-between flex-1">
+                    <div>
+                        <h2 id="modalTitle" class="text-2xl font-bold text-white"></h2>
+                        <div class="flex flex-wrap items-center gap-2 text-xs text-gray-300 mt-2">
+                            <span id="modalYear" class="bg-black/50 px-2.5 py-1 rounded"></span>
+                            <span id="modalGenre" class="bg-black/50 px-2.5 py-1 rounded"></span>
+                            <span id="modalRating" class="text-yellow-400 font-semibold bg-black/50 px-2.5 py-1 rounded"></span>
+                        </div>
+                        <p id="modalDesc" class="text-sm text-gray-200 mt-3 leading-relaxed"></p>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <button id="modalUniverseBtn" onclick="toggleCurrentMovieUniverse()" class="px-4 py-2 rounded-xl bg-gray-800 hover:bg-red-600 text-xs font-semibold text-white transition flex items-center gap-1.5"><span id="modalUniverseText">Add to My Universe</span></button>
+                            <button onclick="toggleWatchedStatusModal()" id="modalWatchedBtn" class="px-4 py-2 rounded-xl bg-gray-800 hover:bg-emerald-600 text-xs font-semibold text-white transition flex items-center gap-1.5"><span id="modalWatchedText">Mark Watched</span></button>
+                            <button onclick="openNoteModalForActiveMovie()" class="px-4 py-2 rounded-xl bg-purple-600/20 border border-purple-500/40 hover:bg-purple-600 text-xs font-semibold text-purple-300">Add Note</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <a id="btn480p" href="#" target="_blank" class="text-center bg-black/50 hover:bg-red-600 text-gray-200 border border-white/15 py-2.5 rounded-xl text-xs font-semibold">📥 480p</a>
+                <a id="btn720p" href="#" target="_blank" class="text-center bg-black/50 hover:bg-red-600 text-gray-200 border border-white/15 py-2.5 rounded-xl text-xs font-semibold">📥 720p</a>
+                <a id="btn1080p" href="#" target="_blank" class="text-center bg-black/50 hover:bg-red-600 text-gray-200 border border-white/15 py-2.5 rounded-xl text-xs font-semibold">📥 1080p</a>
+                <a id="btn2160p" href="#" target="_blank" class="text-center bg-black/50 hover:bg-red-600 text-gray-200 border border-white/15 py-2.5 rounded-xl text-xs font-semibold">📥 4K</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 11. Cinematic ID Modal -->
+    <div id="cinematicIdModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-md w-full rounded-2xl p-6 relative border border-cyan-500/50 shadow-2xl space-y-4">
+            <button onclick="document.getElementById('cinematicIdModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400">✕</button>
+            <h2 class="text-xl font-black text-white font-scifi">CINEMATIC ID</h2>
+            <div class="glass-panel p-4 rounded-xl border border-cyan-500/30 space-y-2 text-xs font-mono">
+                <div>USERNAME: <input type="text" id="idUsernameInput" onchange="updateUserIdName(this.value)" class="bg-gray-900 border border-cyan-500/40 rounded px-2 py-1 text-white w-full mt-1"></div>
+                <div>WATCHED: <span id="idWatchedCount" class="text-red-400 font-bold">0</span></div>
+                <div>SAVED: <span id="idUniverseCount" class="text-amber-400 font-bold">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 12. Memory Vault Modal -->
+    <div id="memoryVaultModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-xl w-full rounded-2xl p-6 relative border border-purple-500/50 shadow-2xl space-y-4 max-h-[80vh] overflow-y-auto">
+            <button onclick="document.getElementById('memoryVaultModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400">✕</button>
+            <h2 class="text-xl font-black text-white">MEMORY VAULT</h2>
+            <div id="memoryVaultList" class="space-y-3"></div>
+        </div>
+    </div>
+
+    <!-- Add Note Modal -->
+    <div id="addNoteModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-md w-full rounded-2xl p-6 relative border border-purple-500/50 space-y-3">
+            <h3 class="text-lg font-bold text-white">Save Note</h3>
+            <input type="text" id="noteMovieTitle" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white text-xs" readonly>
+            <textarea id="noteTextContent" rows="3" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white text-xs" placeholder="Write thoughts..."></textarea>
+            <div class="flex justify-end gap-2"><button onclick="document.getElementById('addNoteModal').classList.add('hidden')" class="px-3 py-1.5 bg-gray-800 text-xs text-white rounded">Cancel</button><button onclick="saveMemoryNote()" class="px-3 py-1.5 bg-purple-600 text-xs text-white rounded font-bold">Save</button></div>
+        </div>
+    </div>
+
+    <!-- 15. Achievements -->
+    <div id="achievementModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-md w-full rounded-2xl p-6 relative border border-yellow-500/50 space-y-4 max-h-[80vh] overflow-y-auto">
+            <button onclick="document.getElementById('achievementModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400">✕</button>
+            <h2 class="text-xl font-black text-white">ACHIEVEMENTS</h2>
+            <p id="userXpLevelDisplay" class="text-xs text-yellow-400 font-mono">Level 1 (0 XP)</p>
+            <div id="badgesGrid" class="space-y-2"></div>
+        </div>
+    </div>
+
+    <!-- 17. Voice Deck -->
+    <div id="voiceCommandModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-sm w-full rounded-3xl p-6 text-center space-y-4 border border-cyan-500/60">
+            <button onclick="stopVoiceRecognition()" class="absolute top-4 right-4 text-gray-400">✕</button>
+            <div class="w-16 h-16 mx-auto rounded-full bg-cyan-500/20 flex items-center justify-center animate-pulse text-cyan-400">🎙️</div>
+            <p id="voiceStatusText" class="text-xs text-cyan-300 font-mono">Listening...</p>
+            <button onclick="stopVoiceRecognition()" class="px-4 py-2 bg-gray-800 text-white rounded text-xs">Close</button>
+        </div>
+    </div>
+
+    <!-- 18. Radar -->
+    <div id="cinematicRadarModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-md w-full rounded-3xl p-6 text-center space-y-4 border border-purple-500/60">
+            <button onclick="document.getElementById('cinematicRadarModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400">✕</button>
+            <h2 class="text-xl font-black text-white">CINEMATIC RADAR</h2>
+            <div id="radarStatsContent" class="text-xs font-mono text-gray-300 space-y-1 text-left glass-panel p-3 rounded"></div>
+            <button onclick="surpriseMe(); document.getElementById('cinematicRadarModal').classList.add('hidden');" class="w-full py-2 bg-purple-600 text-white font-bold rounded text-xs">Random Signal Ping</button>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let userUniverse = JSON.parse(localStorage.getItem('flixhive_universe')) || { 
+            username: "CinematicExplorer", genres: {}, watched: [], universeSaved: ["Pirates of the Caribbean: The Curse of the Black Pearl"], memoryNotes: [], xp: 0, badges: []
+        };
+
+        function saveUniverseState() {
+            localStorage.setItem('flixhive_universe', JSON.stringify(userUniverse));
+            updateUniverseStats();
+            checkAchievements();
+        }
+
+        function updateUniverseStats() {
+            const watchedEl = document.getElementById('statWatchedCount');
+            const universeEl = document.getElementById('statUniverseCount');
+            const idWatched = document.getElementById('idWatchedCount');
+            const idUniverse = document.getElementById('idUniverseCount');
+            if(watchedEl) watchedEl.innerText = userUniverse.watched.length;
+            if(universeEl) universeEl.innerText = userUniverse.universeSaved.length;
+            if(idWatched) idWatched.innerText = userUniverse.watched.length;
+            if(idUniverse) idUniverse.innerText = userUniverse.universeSaved.length;
+            const nameInput = document.getElementById('idUsernameInput');
+            if(nameInput && nameInput.value !== userUniverse.username) nameInput.value = userUniverse.username;
+        }
+
+        function updateUserIdName(val) { userUniverse.username = val; saveUniverseState(); }
+        function addXp(amount) { userUniverse.xp = (userUniverse.xp || 0) + amount; saveUniverseState(); }
+        function checkAchievements() {
+            let badges = userUniverse.badges || [];
+            if(userUniverse.watched.length >= 1 && !badges.includes('First Explorer')) badges.push('First Explorer');
+            if(userUniverse.universeSaved.length >= 3 && !badges.includes('Movie Collector')) badges.push('Movie Collector');
+            userUniverse.badges = badges;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            runHiveBootSequence();
+            initAdvancedCinematicApp();
+        });
+
+        function runHiveBootSequence() {
+            const bootScreen = document.getElementById('hive-boot-screen');
+            const mainApp = document.getElementById('main-app');
+            const progressBar = document.getElementById('boot-progress-bar');
+            const percentage = document.getElementById('boot-percentage');
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 20;
+                if(progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => { bootScreen.remove(); mainApp.classList.remove('opacity-0'); }, 400);
+                }
+                progressBar.style.width = progress + '%';
+                percentage.textContent = progress + '%';
+            }, 100);
+        }
+
+        function switchMainView(viewId) {
+            ['hub', 'galaxy', 'timeline', 'universe'].forEach(v => {
+                const el = document.getElementById('view' + v.charAt(0).toUpperCase() + v.slice(1));
+                if(el) el.classList.add('hidden');
+            });
+            const target = document.getElementById('view' + viewId.charAt(0).toUpperCase() + viewId.slice(1));
+            if(target) { target.classList.remove('hidden'); target.classList.add('portal-warp'); }
+            if(viewId === 'galaxy') renderGalaxyView();
+            if(viewId === 'timeline') renderTimelineView(2024);
+            if(viewId === 'universe') renderUniverseView();
+            lucide.createIcons();
+        }
+
+        function toggleHoloCommandCenter() { document.getElementById('holoCommandModal').classList.toggle('hidden'); lucide.createIcons(); }
+
+        function triggerMovieScanner(event, title) {
+            if(event) event.stopPropagation();
+            const cards = document.querySelectorAll('.movie-card');
+            let mData = null;
+            cards.forEach(c => { if(c.dataset.title === title) mData = c.dataset; });
+            if(!mData) return;
+            addXp(15);
+            saveUniverseState();
+
+            const modal = document.getElementById('movieScannerModal');
+            const laser = document.getElementById('scannerLaser');
+            const content = document.getElementById('scannerModalContent');
+            modal.classList.remove('hidden');
+            laser.style.opacity = '1';
+            setTimeout(() => {
+                laser.style.opacity = '0';
+                content.innerHTML = `
+                    <div class="space-y-4">
+                        <h2 class="text-2xl font-black text-white">${mData.title}</h2>
+                        <p class="text-xs text-gray-300">${mData.desc}</p>
+                        <div class="flex justify-end gap-2">
+                            <button onclick="closeScannerModal()" class="px-4 py-2 bg-gray-800 text-white rounded text-xs">Close</button>
+                            <button onclick="closeScannerModal(); openModalFromTitle('${mData.title}');" class="px-4 py-2 bg-red-600 text-white rounded text-xs">Details</button>
+                        </div>
+                    </div>
+                `;
+            }, 400);
+        }
+
+        function closeScannerModal() { document.getElementById('movieScannerModal').classList.add('hidden'); }
+
+        function renderGalaxyView() {
+            const container = document.getElementById('galaxySectorsContainer');
+            if(!container) return;
+            const cards = Array.from(document.querySelectorAll('.movie-card'));
+            let html = '<div class="glass-panel p-6 rounded-2xl col-span-full"><h3 class="text-red-400 font-bold mb-3">Stellar Sector</h3>';
+            cards.forEach(c => {
+                html += `<div onclick="openModalFromTitle('${c.dataset.title}')" class="p-2 cursor-pointer hover:text-red-400 text-sm text-white">${c.dataset.title} (${c.dataset.year})</div>`;
+            });
+            container.innerHTML = html + '</div>';
+        }
+
+        function renderTimelineView(year) {
+            const disp = document.getElementById('timelineDisplayYear');
+            if(disp) disp.innerText = year;
+            const grid = document.getElementById('timelineResultsGrid');
+            if(!grid) return;
+            let html = '';
+            document.querySelectorAll('.movie-card').forEach(c => {
+                const d = c.dataset;
+                if(Math.abs(parseInt(d.year) - parseInt(year)) <= 10) {
+                    html += `<div class="glass-panel rounded-xl overflow-hidden cursor-pointer p-3" onclick="openModalFromTitle('${d.title}')"><img src="${d.poster}" class="h-40 w-full object-cover rounded mb-2"><h4 class="text-xs font-bold text-white truncate">${d.title}</h4></div>`;
+                }
+            });
+            grid.innerHTML = html || '<div class="col-span-full text-center text-gray-400">No movies found.</div>';
+        }
+
+        function updateTimelineYear(val) { renderTimelineView(val); }
+
+        function renderNeuralRecommendations() {
+            const grid = document.getElementById('neuralRecGrid');
+            if(!grid) return;
+            let html = '';
+            document.querySelectorAll('.movie-card').forEach(c => {
+                const d = c.dataset;
+                html += `<div onclick="openModalFromTitle('${d.title}')" class="glass-panel p-2 rounded cursor-pointer flex gap-2"><img src="${d.poster}" class="w-10 h-14 object-cover rounded"><div class="overflow-hidden"><h5 class="text-[10px] font-bold text-white truncate">${d.title}</h5><span class="text-[9px] text-red-400">Match: 97%</span></div></div>`;
+            });
+            grid.innerHTML = html;
+        }
+
+        function renderUniverseView() {
+            const grid = document.getElementById('universeMoviesGrid');
+            if(!grid) return;
+            let html = '';
+            document.querySelectorAll('.movie-card').forEach(c => {
+                const d = c.dataset;
+                if(userUniverse.universeSaved.includes(d.title) || userUniverse.watched.includes(d.title)) {
+                    html += `<div class="glass-panel rounded-xl overflow-hidden cursor-pointer p-3" onclick="openModalFromTitle('${d.title}')"><img src="${d.poster}" class="h-40 w-full object-cover rounded mb-2"><h4 class="text-xs font-bold text-white truncate">${d.title}</h4></div>`;
+                }
+            });
+            grid.innerHTML = html || '<div class="col-span-full text-center text-gray-400">Empty Universe.</div>';
+            updateUniverseStats();
+        }
+
+        let activeModalTitle = null;
+        function toggleCurrentMovieUniverse() {
+            if(!activeModalTitle) return;
+            const idx = userUniverse.universeSaved.indexOf(activeModalTitle);
+            if(idx > -1) userUniverse.universeSaved.splice(idx, 1);
+            else { userUniverse.universeSaved.push(activeModalTitle); addXp(10); }
+            saveUniverseState();
+            openModalFromTitle(activeModalTitle);
+        }
+
+        function toggleWatchedStatusModal() {
+            if(!activeModalTitle) return;
+            const idx = userUniverse.watched.indexOf(activeModalTitle);
+            if(idx > -1) userUniverse.watched.splice(idx, 1);
+            else { userUniverse.watched.push(activeModalTitle); addXp(20); }
+            saveUniverseState();
+            openModalFromTitle(activeModalTitle);
+        }
+
+        function initAdvancedCinematicApp() {
+            const cards = document.querySelectorAll('.movie-card');
+            const filmStrip = document.getElementById('filmStripContainer');
+            let filmHTML = '';
+            cards.forEach(c => {
+                const d = c.dataset;
+                filmHTML += `<div onclick="openModalFromTitle('${d.title}')" class="flex-shrink-0 w-32 h-48 rounded overflow-hidden cursor-pointer relative"><img src="${d.poster}" class="w-full h-full object-cover"></div>`;
+            });
+            if(filmStrip) filmStrip.innerHTML = filmHTML;
+            renderNeuralRecommendations();
+            updateUniverseStats();
+            lucide.createIcons();
+        }
+
+        function openMovieModal(d) {
+            activeModalTitle = d.title;
+            document.getElementById('modalTitle').innerText = d.title;
+            document.getElementById('modalYear').innerText = d.year;
+            document.getElementById('modalGenre').innerText = d.cat;
+            document.getElementById('modalRating').innerText = '★ ' + d.rating;
+            document.getElementById('modalDesc').innerText = d.desc;
+            document.getElementById('modalPoster').src = d.poster;
+            document.getElementById('btn480p').href = d.l480 || '#';
+            document.getElementById('btn720p').href = d.l720 || '#';
+            document.getElementById('btn1080p').href = d.l1080 || '#';
+            document.getElementById('btn2160p').href = d.l2160 || '#';
+            document.getElementById('modalUniverseText').innerText = userUniverse.universeSaved.includes(d.title) ? "Saved ✓" : "Add to My Universe";
+            document.getElementById('modalWatchedText').innerText = userUniverse.watched.includes(d.title) ? "Watched ✓" : "Mark Watched";
+            document.getElementById('movieModal').classList.remove('hidden');
+        }
+
+        function openModalFromTitle(title) {
+            document.querySelectorAll('.movie-card').forEach(c => { if(c.dataset.title === title) openMovieModal(c.dataset); });
+        }
+
+        function closeModal() { document.getElementById('movieModal').classList.add('hidden'); }
+        function surpriseMe() { const cards = document.querySelectorAll('.movie-card'); const rand = cards[Math.floor(Math.random() * cards.length)]; if(rand) openMovieModal(rand.dataset); }
+        function filterByMood(mood) {
+            document.querySelectorAll('.movie-card').forEach(c => {
+                const g = c.dataset.genre.toLowerCase();
+                const m = (mood === 'happy' && g.includes('comedy')) || (mood === 'scary' && g.includes('horror')) || (mood === 'action' && g.includes('action')) || (mood === 'scifi' && g.includes('sci-fi')) || (mood === 'drama' && g.includes('drama')) || (mood === 'romantic' && g.includes('romance'));
+                c.closest('.card-3d-wrapper').style.display = m ? 'block' : 'none';
+            });
+        }
+        function filterByLanguage(lang) {
+            document.querySelectorAll('.movie-card').forEach(c => {
+                const l = c.dataset.language.toLowerCase();
+                c.closest('.card-3d-wrapper').style.display = (lang === 'all' || l.includes(lang)) ? 'block' : 'none';
+            });
+        }
+        function filterByYear(yr) {
+            document.querySelectorAll('.movie-card').forEach(c => {
+                c.closest('.card-3d-wrapper').style.display = (yr === 'all' || c.dataset.year === yr) ? 'block' : 'none';
+            });
+        }
+        function performSearch() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.movie-card').forEach(c => {
+                const text = (c.dataset.title + ' ' + c.dataset.genre).toLowerCase();
+                c.closest('.card-3d-wrapper').style.display = text.includes(q) ? 'block' : 'none';
+            });
+        }
+        function filterCategory(cat, btn) {
+            document.querySelectorAll('.category-btn').forEach(b => { b.className = "category-btn px-4 py-1.5 rounded-full bg-gray-800 text-gray-200 text-sm font-medium whitespace-nowrap"; });
+            if(btn) { btn.className = "category-btn px-4 py-1.5 rounded-full bg-red-600 text-white text-sm font-medium whitespace-nowrap neon-glow-red"; }
+            document.querySelectorAll('.movie-card').forEach(c => {
+                c.closest('.card-3d-wrapper').style.display = (cat === 'all' || c.dataset.genre.toLowerCase().includes(cat.toLowerCase())) ? 'block' : 'none';
+            });
+        }
+        function resetAllFilters() {
+            document.querySelectorAll('.card-3d-wrapper').forEach(c => c.style.display = 'block');
+        }
+        function triggerInfiniteDiscovery() {
+            const grid = document.getElementById('moviesGrid');
+            const arr = Array.from(document.querySelectorAll('.card-3d-wrapper')).sort(() => Math.random() - 0.5);
+            arr.forEach(el => grid.appendChild(el));
+            addXp(10);
+        }
+        function openCinematicIdModal() { document.getElementById('cinematicIdModal').classList.remove('hidden'); updateUniverseStats(); }
+        function openMemoryVaultModal() {
+            const list = document.getElementById('memoryVaultList');
+            let html = '';
+            (userUniverse.memoryNotes || []).forEach((n, i) => {
+                html += `<div class="glass-panel p-3 rounded"><h4 class="text-xs font-bold text-purple-300">${n.title}</h4><p class="text-xs text-gray-300">${n.text}</p></div>`;
+            });
+            list.innerHTML = html || '<p class="text-xs text-gray-400">No notes saved.</p>';
+            document.getElementById('memoryVaultModal').classList.remove('hidden');
+        }
+        function openNoteModalForActiveMovie() {
+            if(!activeModalTitle) { alert('Select a movie first.'); return; }
+            document.getElementById('noteMovieTitle').value = activeModalTitle;
+            document.getElementById('noteTextContent').value = '';
+            document.getElementById('addNoteModal').classList.remove('hidden');
+        }
+        function saveMemoryNote() {
+            const title = document.getElementById('noteMovieTitle').value;
+            const text = document.getElementById('noteTextContent').value;
+            if(!text) return;
+            if(!userUniverse.memoryNotes) userUniverse.memoryNotes = [];
+            userUniverse.memoryNotes.push({ title, text });
+            addXp(25);
+            saveUniverseState();
+            document.getElementById('addNoteModal').classList.add('hidden');
+        }
+        function openAchievementModal() {
+            const grid = document.getElementById('badgesGrid');
+            const xp = userUniverse.xp || 0;
+            document.getElementById('userXpLevelDisplay').innerText = `Level ${Math.floor(xp/50)+1} (${xp} XP)`;
+            let html = '';
+            (userUniverse.badges || []).forEach(b => { html += `<div class="glass-panel p-2 rounded text-xs text-yellow-400 font-mono">🏆 ${b}</div>`; });
+            grid.innerHTML = html || '<p class="text-xs text-gray-400">No badges unlocked yet.</p>';
+            document.getElementById('achievementModal').classList.remove('hidden');
+        }
+        function toggleVoiceDeck() { document.getElementById('voiceCommandModal').classList.remove('hidden'); }
+        function stopVoiceRecognition() { document.getElementById('voiceCommandModal').classList.add('hidden'); }
+        function openCinematicRadar() {
+            document.getElementById('radarStatsContent').innerHTML = `<div>Nodes: ${document.querySelectorAll('.movie-card').length}</div><div>XP: ${userUniverse.xp||0}</div>`;
+            document.getElementById('cinematicRadarModal').classList.remove('hidden');
+        }
+        let isDark = true;
+        function toggleTheme() { isDark = !isDark; document.body.className = isDark ? "bg-gray-950 text-gray-100 font-sans min-h-screen relative" : "bg-gray-100 text-gray-900 font-sans min-h-screen relative"; }
+    </script>
+</body>
+</html>
+```
