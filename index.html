@@ -43,24 +43,24 @@
         <!-- Movies Grid -->
         <div id="moviesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             
-            <!-- Movie Card 1 (Note: data-title aur data-genre lagana zaroori hai search/filter ke liye) -->
+            <!-- Movie Card 1 -->
             <div class="movie-card bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-red-500/50 transition cursor-pointer group flex flex-col"
                  data-title="The Silent City" 
                  data-genre="Action Thriller"
-                 onclick="openModal(
-                    'The Silent City', 
-                    '2024', 
-                    '7.8', 
-                    'Action / Thriller', 
-                    'A gripping tale of survival in a futuristic dystopian city where silence is the only law.', 
-                    'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=500&q=80', 
-                    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80', 
-                    'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80', 
-                    'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80', 
-                    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80', 
-                    'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80', 
-                    'LINK_480P', 'LINK_720P', 'LINK_1080P', 'LINK_2160P'
-                 )">
+                 data-year="2024"
+                 data-rating="7.8"
+                 data-cat="Action / Thriller"
+                 data-desc="A gripping tale of survival in a futuristic dystopian city where silence is the only law."
+                 data-poster="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=500&q=80"
+                 data-s1="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+                 data-s2="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80"
+                 data-s3="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80"
+                 data-s4="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+                 data-s5="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80"
+                 data-l480="LINK_480P"
+                 data-l720="LINK_720P"
+                 data-l1080="LINK_1080P"
+                 data-l2160="LINK_2160P">
                 <div class="aspect-[2/3] bg-gray-800 relative overflow-hidden">
                     <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=500&q=80" alt="Poster" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                     <span class="absolute top-2 right-2 bg-black/70 backdrop-blur text-xs px-2 py-1 rounded font-medium text-yellow-400">★ 7.8</span>
@@ -71,55 +71,24 @@
                 </div>
             </div>
 
-          <div class="movie-card bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-red-500/50 transition cursor-pointer group flex flex-col"
-     data-title="🏴‍☠️ Pirates_of_the_Caribbean:_The_Curse_of_the_ Black_Pearl (2003)" 
-     data-genre="Action,_Adventure,_Fantasy"
-     onclick="openModal(
-        '🏴‍☠️ Pirates_of_the_Caribbean:_The_Curse_of_the_ Black_Pearl (2003)', 
-        '2003', 
-        '8.1', 
-        'Action / Adventure / Fantasy', 
-        'Captain Jack Sparrow embarks on an exciting adventure to reclaim his ship, the Black Pearl. Alongside Will Turner, he faces the cursed pirates led by Captain Barbossa and fights to rescue Elizabeth Swann while uncovering the mystery of the curse.', 
-        'https://i.imgur.com/FDheuCz.jpeg', 
-        'https://i.imgur.com/HPYLg2i.jpeg', 
-        'https://i.imgur.com/2Vtt1Vh.jpeg', 
-        'https://i.imgur.com/38wvSWP.jpeg', 
-        'https://i.imgur.com/g2bRa8u.jpeg', 
-        'https://i.imgur.com/fxnjlUl.jpeg', 
-        'https://hubcloud.pw/video/jv1jhkjn6446v8z', 
-        'https://hubcloud.pw/video/oblsvlbphtzjja4', 
-        'https://hubcloud.pw/video/bw6nhq7qpflbf1p', 
-        'https://hubcloud.pw/video/efodyurfmzcmfkc'
-     )">
-    <div class="aspect-[2/3] bg-gray-800 relative overflow-hidden">
-        <img src="https://i.imgur.com/FDheuCz.jpeg" alt="Poster" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-        <span class="absolute top-2 right-2 bg-black/70 backdrop-blur text-xs px-2 py-1 rounded font-medium text-yellow-400">★ 8.1</span>
-    </div>
-    <div class="p-3">
-        <h3 class="font-semibold text-sm truncate">🏴‍☠️ Pirates_of_the_Caribbean:_The_Curse_of_the_ Black_Pearl (2003)</h3>
-        <p class="text-xs text-gray-400 mt-0.5">2003 • Action</p>
-    </div>
-</div>
-
-
-            <!-- Movie Card 2 (Example ke taur par doosri movie bhi daali hai) -->
+            <!-- Movie Card 2 -->
             <div class="movie-card bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-red-500/50 transition cursor-pointer group flex flex-col"
                  data-title="Cyber Odyssey" 
                  data-genre="Sci-Fi"
-                 onclick="openModal(
-                    'Cyber Odyssey', 
-                    '2025', 
-                    '8.2', 
-                    'Sci-Fi', 
-                    'An epic journey through virtual reality and cyberspace.', 
-                    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80', 
-                    'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80', 
-                    'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80', 
-                    'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80', 
-                    'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80', 
-                    'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80', 
-                    'LINK_480P', 'LINK_720P', 'LINK_1080P', 'LINK_2160P'
-                 )">
+                 data-year="2025"
+                 data-rating="8.2"
+                 data-cat="Sci-Fi"
+                 data-desc="An epic journey through virtual reality and cyberspace."
+                 data-poster="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80"
+                 data-s1="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80"
+                 data-s2="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80"
+                 data-s3="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80"
+                 data-s4="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80"
+                 data-s5="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80"
+                 data-l480="LINK_480P"
+                 data-l720="LINK_720P"
+                 data-l1080="LINK_1080P"
+                 data-l2160="LINK_2160P">
                 <div class="aspect-[2/3] bg-gray-800 relative overflow-hidden">
                     <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80" alt="Poster" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                     <span class="absolute top-2 right-2 bg-black/70 backdrop-blur text-xs px-2 py-1 rounded font-medium text-yellow-400">★ 8.2</span>
@@ -187,12 +156,15 @@
         // 1. Search Functionality
         const searchInput = document.getElementById('searchInput');
         searchInput.addEventListener('input', function(e) {
-            const term = e.target.value.toLowerCase();
+            const term = e.target.value.toLowerCase().trim();
             const cards = document.querySelectorAll('.movie-card');
             
             cards.forEach(card => {
-                const title = card.getAttribute('data-title').toLowerCase();
-                if (title.includes(term)) {
+                const titleAttr = card.getAttribute('data-title') || '';
+                const titleText = card.querySelector('h3') ? card.querySelector('h3').innerText : '';
+                const combinedTitle = (titleAttr + ' ' + titleText).toLowerCase();
+                
+                if (term === '' || combinedTitle.includes(term)) {
                     card.style.display = 'flex';
                 } else {
                     card.style.display = 'none';
@@ -205,8 +177,8 @@
             const cards = document.querySelectorAll('.movie-card');
             
             cards.forEach(card => {
-                const cardGenre = card.getAttribute('data-genre');
-                if (genre === 'all' || cardGenre.includes(genre)) {
+                const cardGenre = card.getAttribute('data-genre') || '';
+                if (genre === 'all' || cardGenre.toLowerCase().includes(genre.toLowerCase())) {
                     card.style.display = 'flex';
                 } else {
                     card.style.display = 'none';
@@ -214,20 +186,36 @@
             });
         }
 
-        // 3. Modal Functions
-        function openModal(title, year, rating, genre, desc, poster, s1, s2, s3, s4, s5, link480, link720, link1080, link2160) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalYear').innerText = year;
-            document.getElementById('modalRating').innerText = '★ ' + rating;
-            document.getElementById('modalGenre').innerText = genre;
-            document.getElementById('modalDesc').innerText = desc;
-            document.getElementById('modalPoster').src = poster;
-            document.getElementById('modalScreen1').src = s1;
-            document.getElementById('modalScreen2').src = s2;
-            document.getElementById('modalScreen3').src = s3;
-            document.getElementById('modalScreen4').src = s4;
-            document.getElementById('modalScreen5').src = s5;
-            
-            document.getElementById('btn480p').href = link480;
-            document.getElementById('btn720p').href = link720;
-            document
+        // 3. Modal Click Handler (Bulletproof Data Attributes method)
+        document.addEventListener('click', function(e) {
+            const card = e.target.closest('.movie-card');
+            if (card) {
+                const d = card.dataset;
+                document.getElementById('modalTitle').innerText = d.title;
+                document.getElementById('modalYear').innerText = d.year;
+                document.getElementById('modalRating').innerText = '★ ' + d.rating;
+                document.getElementById('modalGenre').innerText = d.cat;
+                document.getElementById('modalDesc').innerText = d.desc;
+                document.getElementById('modalPoster').src = d.poster;
+                document.getElementById('modalScreen1').src = d.s1;
+                document.getElementById('modalScreen2').src = d.s2;
+                document.getElementById('modalScreen3').src = d.s3;
+                document.getElementById('modalScreen4').src = d.s4;
+                document.getElementById('modalScreen5').src = d.s5;
+                
+                document.getElementById('btn480p').href = d.l480;
+                document.getElementById('btn720p').href = d.l720;
+                document.getElementById('btn1080p').href = d.l1080;
+                document.getElementById('btn2160p').href = d.l2160;
+                
+                document.getElementById('movieModal').classList.remove('hidden');
+            }
+        });
+
+        function closeModal() {
+            document.getElementById('movieModal').classList.add('hidden');
+        }
+    </script>
+
+</body>
+</html>
