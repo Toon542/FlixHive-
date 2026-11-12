@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlixHive // 2050+ Advanced Cinematic Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        hive: {
+                            bg: '#030712',
+                            card: 'rgba(17, 24, 39, 0.85)',
+                            border: 'rgba(239, 68, 68, 0.3)',
+                            red: '#ef4444',
+                            cyan: '#06b6d4',
+                            purple: '#a855f7'
+                        }
+                    },
+                    animation: {
+                        'spin-slow': 'spin 20s linear infinite'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Cinzel:wght@700&family=Creepster&family=Dancing+Script:wght@700&family=Fredoka:wght@600&family=Orbitron:wght@700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #030712; color: #f3f4f6; }
+        .genre-scroll::-webkit-scrollbar, .film-strip::-webkit-scrollbar { height: 6px; }
+        .genre-scroll::-webkit-scrollbar-track, .film-strip::-webkit-scrollbar-track { background: #030712; border-radius: 10px; }
+        .genre-scroll::-webkit-scrollbar-thumb, .film-strip::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 10px; }
+
+        .font-horror { font-family: 'Creepster', cursive; letter-spacing: 1px; }
+        .font-scifi { font-family: 'Orbitron', sans-serif; }
+        .font-fantasy { font-family: 'Cinzel', serif; }
+        .font-action { font-family: 'Black Ops One', cursive; }
+        .font-romance { font-family: 'Dancing Script', cursive; font-size: 1.15rem; }
+        .font-comedy { font-family: 'Fredoka', sans-serif; }
+        .font-default { font-family: system-ui, -apple-system, sans-serif; }
+
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .neon-glow-red { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+        .neon-glow-hover:hover { box-shadow: 0 0 25px rgba(239, 68, 68, 0.6); border-color: rgba(239, 68, 68, 0.8); }
+
+        .card-3d-wrapper { perspective: 1000px; }
+        .card-3d { transition: transform 0.1s ease-out, box-shadow 0.3s ease; transform-style: preserve-3d; }
+        .film-strip-border { border-left: 4px dashed rgba(239, 68, 68, 0.5); border-right: 4px dashed rgba(239, 68, 68, 0.5); }
+
+        .hero-slide { display: none; }
+        .hero-slide.active { display: block; animation: fadeIn 0.8s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0.3; } to { opacity: 1; } }
+
+        .starfield {
+            background-image: radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                              radial-gradient(2px 2px at 40px 70px, #ef4444, rgba(0,0,0,0)),
+                              radial-gradient(1px 1px at 90px 40px, #06b6d4, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans min-h-screen relative">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-gray-800/80 bg-gray-900/90 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center justify-between w-full sm:w-auto">
+                <span class="text-2xl font-extrabold tracking-wider text-red-500 drop-shadow cursor-pointer" onclick="switchMainView('hub')">Flix<span class="text-white">Hive</span></span>
+                <button onclick="toggleHoloCommandCenter()" class="sm:hidden bg-gray-800 border border-red-500/40 text-red-500 p-2 rounded-lg" title="Holo Command Center">
+                    <i data-lucide="command" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <div class="hidden md:flex items-center gap-2 text-xs font-semibold overflow-x-auto">
+                <button onclick="switchMainView('hub')" id="navHub" class="px-3 py-1.5 rounded-lg bg-red-600 text-white transition neon-glow-red">Hub</button>
+                <button onclick="switchMainView('galaxy')" id="navGalaxy" class="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:text-white transition">🌌 Galaxy</button>
+                <button onclick="switchMainView('timeline')" id="navTimeline" class="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:text-white transition">⏳ Time-Travel</button>
+                <button onclick="switchMainView('universe')" id="navUniverse" class="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:text-white transition">🪐 My Universe</button>
+                <button onclick="switchMainView('vault')" id="navVault" class="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:text-white transition">🛡️ Memory Vault</button>
+                <button onclick="switchMainView('id')" id="navId" class="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:text-white transition">🆔 Cinematic ID</button>
+            </div>
+
+            <!-- Search Bar & Controls -->
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <div class="relative flex-1 sm:w-56">
+                    <input type="text" id="searchInput" placeholder="Search movies by name or genre..." class="w-full bg-gray-800 border border-gray-700 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-red-500 transition shadow-inner">
+                </div>
+                <button id="searchGoBtn" onclick="performSearch()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition neon-glow-red cursor-pointer">Go</button>
+                <button onclick="startVoiceRecognition()" class="bg-gray-800 hover:bg-gray-700 text-cyan-400 border border-cyan-500/30 p-2 rounded-full text-sm transition" title="Voice Command">🎙️</button>
+                <button onclick="openCinematicRadar()" class="bg-gray-800 hover:bg-gray-700 text-purple-400 border border-purple-500/30 p-2 rounded-full text-sm transition" title="Cinematic Radar">📡</button>
+                <button onclick="toggleHoloCommandCenter()" class="hidden sm:block bg-gray-800 hover:bg-gray-700 text-red-400 border border-red-500/30 p-2 rounded-full text-sm transition" title="Holo Command Center">⚙️</button>
+                <button id="themeToggleBtn" onclick="toggleTheme()" class="bg-gray-800 hover:bg-gray-700 text-gray-200 p-2.5 rounded-full text-sm transition" title="Toggle Mode">🌙</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div id="dynamicViewContainer" class="flex-1">
+
+        <!-- VIEW 1: HUB -->
+        <div id="viewHub" class="space-y-6">
+            <!-- Hero Slider -->
+            <section class="relative w-full h-[450px] sm:h-[500px] bg-gray-900 overflow-hidden shadow-2xl mb-6">
+                <div id="heroSliderContainer" class="w-full h-full relative"></div>
+                <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-red-600 text-white p-3 rounded-full transition z-20 backdrop-blur">❮</button>
+                <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-red-600 text-white p-3 rounded-full transition z-20 backdrop-blur">❯</button>
+                <div id="sliderDots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20"></div>
+            </section>
+
+            <main class="max-w-7xl mx-auto px-4 py-4">
+                <!-- Engagement Bar -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <button onclick="surpriseMe()" class="glass-panel hover:bg-gray-800/80 p-4 rounded-xl flex items-center justify-between transition group neon-glow-hover cursor-pointer">
+                        <div class="text-left">
+                            <h3 class="font-bold text-white text-sm sm:text-base flex items-center gap-2">🎲 Surprise Me!</h3>
+                            <p class="text-xs text-gray-300 mt-0.5">Pick a random movie instantly.</p>
+                        </div>
+                        <span class="bg-red-600 text-white p-2.5 rounded-lg group-hover:scale-110 transition neon-glow-red">✨</span>
+                    </button>
+
+                    <div class="glass-panel p-4 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-white text-sm sm:text-base flex items-center gap-2">⚡ Motion Reactor (Moods)</h3>
+                            <span class="text-xs text-red-400 font-medium">Select Vibe</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="filterByMood('happy')" class="bg-gray-800 hover:bg-red-600 text-gray-200 text-xs py-1.5 px-2 rounded-lg transition font-medium cursor-pointer">😊 Happy</button>
+                            <button onclick="filterByMood('romantic')" class="bg-gray-800 hover:bg-red-600 text-gray-200 text-xs py-1.5 px-2 rounded-lg transition font-medium cursor-pointer">💖 Romantic</button>
+                            <button onclick="filterByMood('scary')" class="bg-gray-800 hover:bg-red-600 text-gray-200 text-xs py-1.5 px-2 rounded-lg transition font-medium cursor-pointer">😱 Scary</button>
+                            <button onclick="filterByMood('action')" class="bg-gray-800 hover:bg-red-600 text-gray-200 text-xs py-1.5 px-2 rounded-lg transition font-medium cursor-pointer">🔥 Excited</button>
+                            <button onclick="filterByMood('scifi')" class="bg-gray-800 hover:bg-red-600 text-gray-200 text-xs py-1.5 px-2 rounded-lg transition font-medium cursor-pointer">🚀 Sci-Fi</button>
+                            <button onclick="filterByMood('drama')" class="bg-gray-800 hover:bg-red-600 text-gray-200 text-xs py-1.5 px-2 rounded-lg transition font-medium cursor-pointer">💧 Relaxed</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Neural AI Recommendations -->
+                <div id="neuralRecSection" class="glass-panel p-4 rounded-xl mb-6 border border-red-500/20">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-bold text-red-400 flex items-center gap-2"><i data-lucide="cpu" class="w-4 h-4"></i> Neural AI Recommendations</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">Dynamic Match</span>
+                    </div>
+                    <div id="neuralRecGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+                </div>
+
+                <!-- Filters Section -->
+                <div class="glass-panel p-4 rounded-xl mb-6 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button onclick="filterLatest()" id="latestTabBtn" class="px-4 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium transition cursor-pointer">🔥 Latest Updates</button>
+                        <button onclick="resetAllFilters()" class="px-4 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium transition cursor-pointer">🔄 Reset All</button>
+                    </div>
+                    
+                    <div class="flex items-center gap-4 flex-wrap">
+                        <div class="flex items-center gap-2">
+                            <label for="langFilter" class="text-xs font-semibold uppercase tracking-wider text-gray-400">Language:</label>
+                            <select id="langFilter" onchange="filterByLanguage(this.value)" class="bg-gray-800 border border-gray-700 text-gray-200 text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-red-500 transition">
+                                <option value="all">All Languages</option>
+                                <option value="english">English</option>
+                                <option value="hindi">Hindi</option>
+                                <option value="dual">Dual Audio (Hin-Eng)</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <label for="yearFilter" class="text-xs font-semibold uppercase tracking-wider text-gray-400">Year:</label>
+                            <select id="yearFilter" onchange="filterByYear(this.value)" class="bg-gray-800 border border-gray-700 text-gray-200 text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-red-500 transition">
+                                <option value="all">All Years</option>
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2003">2003</option>
+                                <option value="2020">2020</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories A - Z -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Categories (A - Z)</span>
+                        <span id="activeGenreLabel" class="text-xs text-red-400 font-medium">Showing: All</span>
+                    </div>
+                    <div class="genre-scroll flex items-center gap-2 overflow-x-auto pb-3">
+                        <button onclick="filterCategory('all', this)" class="category-btn px-4 py-1.5 rounded-full bg-red-600 text-white text-sm font-medium whitespace-nowrap transition neon-glow-red cursor-pointer">All</button>
+                        <button onclick="filterCategory('Action', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium whitespace-nowrap transition cursor-pointer">Action</button>
+                        <button onclick="filterCategory('Adventure', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium whitespace-nowrap transition cursor-pointer">Adventure</button>
+                        <button onclick="filterCategory('Animation', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium whitespace-nowrap transition cursor-pointer">Animation</button>
+                        <button onclick="filterCategory('Comedy', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium whitespace-nowrap transition cursor-pointer">Comedy</button>
+                        <button onclick="filterCategory('Crime', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium whitespace-nowrap transition cursor-pointer">Crime</button>
+                        <button onclick="filterCategory('Drama', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium whitespace-nowrap transition cursor-pointer">Drama</button>
+                        <button onclick="filterCategory('Fantasy', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium whitespace-nowrap transition cursor-pointer">Fantasy</button>
+                        <button onclick="filterCategory('Horror', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium whitespace-nowrap transition cursor-pointer">Horror</button>
+                        <button onclick="filterCategory('Romance', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium whitespace-nowrap transition cursor-pointer">Romance</button>
+                        <button onclick="filterCategory('Sci-Fi', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium whitespace-nowrap transition cursor-pointer">Sci-Fi</button>
+                        <button onclick="filterCategory('Thriller', this)" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium whitespace-nowrap transition cursor-pointer">Thriller</button>
+                    </div>
+                </div>
+
+                <!-- Film Strip Reel -->
+                <div class="mb-8">
+                    <h2 class="text-lg font-bold mb-3 flex items-center gap-2 text-red-500">🎞️ Cinematic Film Strip Reel</h2>
+                    <div class="film-strip film-strip-border bg-gray-900/60 p-4 rounded-xl flex items-center gap-4 overflow-x-auto shadow-2xl">
+                        <div class="flex items-center gap-4" id="filmStripContainer"></div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold">Explore Movies Grid</h2>
+                    <button onclick="triggerInfiniteDiscovery()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs px-4 py-2 rounded-xl font-semibold transition flex items-center gap-1.5 shadow cursor-pointer">🚀 Infinite Discovery</button>
+                </div>
+                
+                <!-- Movies Grid -->
+                <div id="moviesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+                    
+                    <!-- Movie Card 1 -->
+                    <div class="card-3d-wrapper">
+                        <div class="movie-card card-3d glass-panel rounded-xl overflow-hidden hover:border-red-500/80 cursor-pointer group flex flex-col shadow-lg"
+                             data-title="The Silent City" 
+                             data-genre="Action, Thriller, Action Thriller, Dystopian"
+                             data-year="2024"
+                             data-rating="7.8"
+                             data-cat="Action / Thriller / Dystopian"
+                             data-desc="A gripping tale of survival in a futuristic dystopian city where silence is the only law."
+                             data-cast="John Doe, Jane Smith, Alex Mercer"
+                             data-director="Christopher Nolan Jr."
+                             data-runtime="2h 14m"
+                             data-language="English"
+                             data-poster="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=500&q=80"
+                             data-s1="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+                             data-s2="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80"
+                             data-s3="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80"
+                             data-s4="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+                             data-s5="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80"
+                             data-l480="LINK_480P" data-l720="LINK_720P" data-l1080="LINK_1080P" data-l2160="LINK_2160P">
+                            <div class="aspect-[2/3] bg-gray-800 relative overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=500&q=80" alt="Poster" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                <span class="absolute top-2 right-2 bg-black/70 backdrop-blur text-xs px-2 py-1 rounded font-medium text-yellow-400">★ 7.8</span>
+                                <button onclick="triggerMovieScanner(event, 'The Silent City')" class="absolute bottom-2 left-2 bg-red-600/80 hover:bg-red-600 text-white text-[10px] px-2 py-1 rounded font-mono flex items-center gap-1 z-10 cursor-pointer"><i data-lucide="scan" class="w-3 h-3"></i> Scan</button>
+                            </div>
+                            <div class="p-3">
+                                <h3 class="movie-title font-semibold text-sm truncate text-white">The Silent City</h3>
+                                <p class="text-xs text-gray-400 mt-0.5">2024 • English</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Movie Card 2 -->
+                    <div class="card-3d-wrapper">
+                        <div class="movie-card card-3d glass-panel rounded-xl overflow-hidden hover:border-red-500/80 cursor-pointer group flex flex-col shadow-lg"
+                             data-latest="true"
+                             data-title="Pirates of the Caribbean: The Curse of the Black Pearl" 
+                             data-genre="Action, Thriller, Fantasy, Adventure, Mystery"
+                             data-year="2003"
+                             data-rating="8.1"
+                             data-cat="Action / Thriller / Fantasy / Adventure / Mystery"
+                             data-desc="Captain Jack Sparrow embarks on an exciting adventure to reclaim his ship, the Black Pearl."
+                             data-cast="Johnny Depp, Orlando Bloom, Keira Knightley"
+                             data-director="Gore Verbinski"
+                             data-runtime="2h 23m"
+                             data-language="Dual Audio"
+                             data-poster="https://i.imgur.com/FDheuCz.jpeg"
+                             data-s1="https://i.imgur.com/HPYLg2i.jpeg"
+                             data-s2="https://i.imgur.com/2Vtt1Vh.jpeg"
+                             data-s3="https://i.imgur.com/38wvSWP.jpeg"
+                             data-s4="https://i.imgur.com/g2bRa8u.jpeg"
+                             data-s5="https://i.imgur.com/fxnjlUl.jpeg"
+                             data-l480="https://hubcloud.pw/video/jv1jhkjn6446v8z" data-l720="https://hubcloud.pw/video/oblsvlbphtzjja4" data-l1080="https://hubcloud.pw/video/bw6nhq7qpflbf1p" data-l2160="https://hubcloud.pw/video/efodyurfmzcmfkc">
+                            <div class="aspect-[2/3] bg-gray-800 relative overflow-hidden">
+                                <img src="https://i.imgur.com/FDheuCz.jpeg" alt="Poster" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                <span class="absolute top-2 right-2 bg-black/70 backdrop-blur text-xs px-2 py-1 rounded font-medium text-yellow-400">★ 8.1</span>
+                                <button onclick="triggerMovieScanner(event, 'Pirates of the Caribbean: The Curse of the Black Pearl')" class="absolute bottom-2 left-2 bg-red-600/80 hover:bg-red-600 text-white text-[10px] px-2 py-1 rounded font-mono flex items-center gap-1 z-10 cursor-pointer"><i data-lucide="scan" class="w-3 h-3"></i> Scan</button>
+                            </div>
+                            <div class="p-3">
+                                <h3 class="movie-title font-semibold text-sm truncate text-white">Pirates of the Caribbean</h3>
+                                <p class="text-xs text-gray-400 mt-0.5">2003 • Dual Audio</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Movie Card 3 -->
+                    <div class="card-3d-wrapper">
+                        <div class="movie-card card-3d glass-panel rounded-xl overflow-hidden hover:border-red-500/80 cursor-pointer group flex flex-col shadow-lg"
+                             data-latest="true"
+                             data-title="Cyber Odyssey" 
+                             data-genre="Sci-Fi, Cyberpunk, Space Opera, Sci-Fi Thriller"
+                             data-year="2025"
+                             data-rating="8.2"
+                             data-cat="Sci-Fi / Cyberpunk"
+                             data-desc="An epic journey through virtual reality, neon megacities, and deep cyberspace."
+                             data-cast="Keanu Reeves, Anya Taylor-Joy"
+                             data-director="Denis Villeneuve"
+                             data-runtime="2h 45m"
+                             data-language="Hindi"
+                             data-poster="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80"
+                             data-s1="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80"
+                             data-s2="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80"
+                             data-s3="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80"
+                             data-s4="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+                             data-s5="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80"
+                             data-l480="LINK_480P" data-l720="LINK_720P" data-l1080="LINK_1080P" data-l2160="LINK_2160P">
+                            <div class="aspect-[2/3] bg-gray-800 relative overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80" alt="Poster" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                <span class="absolute top-2 right-2 bg-black/70 backdrop-blur text-xs px-2 py-1 rounded font-medium text-yellow-400">★ 8.2</span>
+                                <button onclick="triggerMovieScanner(event, 'Cyber Odyssey')" class="absolute bottom-2 left-2 bg-red-600/80 hover:bg-red-600 text-white text-[10px] px-2 py-1 rounded font-mono flex items-center gap-1 z-10 cursor-pointer"><i data-lucide="scan" class="w-3 h-3"></i> Scan</button>
+                            </div>
+                            <div class="p-3">
+                                <h3 class="movie-title font-semibold text-sm truncate text-white">Cyber Odyssey</h3>
+                                <p class="text-xs text-gray-400 mt-0.5">2025 • Hindi</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+
+        <!-- VIEW 2: GALAXY -->
+        <div id="viewGalaxy" class="hidden max-w-7xl mx-auto px-4 py-8 space-y-6">
+            <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-purple-500/30 text-center space-y-3 starfield relative overflow-hidden">
+                <div class="relative z-10 space-y-2 max-w-2xl mx-auto">
+                    <span class="px-3 py-1 rounded-full text-xs font-mono bg-purple-500/20 text-purple-300 border border-purple-500/40">GALAXY NEBULA CLUSTER</span>
+                    <h1 class="text-3xl sm:text-4xl font-black text-white">Cinematic Galaxy Interface</h1>
+                    <p class="text-gray-300 text-sm">Every movie exists as a glowing star within genre nebulae.</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="galaxySectorsContainer"></div>
+        </div>
+
+        <!-- VIEW 3: TIME TRAVEL -->
+        <div id="viewTimeline" class="hidden max-w-7xl mx-auto px-4 py-8 space-y-8">
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-emerald-500/30 text-center space-y-4">
+                <span class="px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">CHRONOLOGICAL WORMHOLE</span>
+                <h1 class="text-3xl sm:text-4xl font-black text-white">Time Travel Cinema (1950 - 2050)</h1>
+                <div class="max-w-xl mx-auto space-y-3 pt-4">
+                    <div class="flex justify-between text-sm font-mono text-red-400">
+                        <span>1950</span>
+                        <span id="timelineDisplayYear" class="text-lg font-bold text-emerald-400">2024</span>
+                        <span>2050</span>
+                    </div>
+                    <input type="range" min="1950" max="2050" value="2024" oninput="updateTimelineYear(this.value)" class="w-full accent-red-500 cursor-pointer">
+                </div>
+            </div>
+            <div id="timelineResultsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5"></div>
+        </div>
+
+        <!-- VIEW 4: MY UNIVERSE -->
+        <div id="viewUniverse" class="hidden max-w-7xl mx-auto px-4 py-8 space-y-8">
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div class="space-y-2 text-center sm:text-left">
+                    <span class="px-3 py-1 rounded-full text-xs font-mono bg-amber-500/20 text-amber-300 border border-amber-500/40">PERSONAL CINEMATIC VAULT</span>
+                    <h1 class="text-3xl font-black text-white">My Universe Dashboard</h1>
+                    <p class="text-gray-300 text-sm">Manage your watched logs and saved universe collections.</p>
+                </div>
+                <div class="flex space-x-4">
+                    <div class="glass-panel p-4 rounded-2xl text-center border border-red-500/30">
+                        <span id="statWatchedCount" class="text-2xl font-black text-red-500">0</span>
+                        <span class="text-[10px] block text-gray-400 font-mono mt-0.5">WATCHED</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl text-center border border-amber-500/30">
+                        <span id="statUniverseCount" class="text-2xl font-black text-amber-400">0</span>
+                        <span class="text-[10px] block text-gray-400 font-mono mt-0.5">UNIVERSE SAVED</span>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <h2 class="text-xl font-bold tracking-wide text-white flex items-center gap-2">
+                    <i data-lucide="bookmark" class="w-5 h-5 text-amber-400"></i>
+                    <span>My Universe Collection</span>
+                </h2>
+                <div id="universeMoviesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5"></div>
+            </div>
+        </div>
+
+        <!-- VIEW 5: MEMORY VAULT -->
+        <div id="viewVault" class="hidden max-w-7xl mx-auto px-4 py-8 space-y-6">
+            <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-cyan-500/30 space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">DIGITAL VAULT</span>
+                        <h1 class="text-3xl font-black text-white mt-1">Memory Vault — Your Cinematic Memory</h1>
+                        <p class="text-gray-300 text-sm">Save personal notes, watch dates, and favorite movie moments.</p>
+                    </div>
+                    <button onclick="openAddMemoryModal()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer">+ Add Memory</button>
+                </div>
+            </div>
+            <div id="memoryVaultGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5"></div>
+        </div>
+
+        <!-- VIEW 6: CINEMATIC ID -->
+        <div id="viewId" class="hidden max-w-4xl mx-auto px-4 py-8 space-y-6">
+            <div class="glass-panel p-8 rounded-3xl border border-red-500/30 text-center space-y-4 relative overflow-hidden">
+                <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-tr from-red-600 to-purple-600 flex items-center text-3xl font-black justify-center shadow-2xl border-2 border-white/20">
+                    HIVE
+                </div>
+                <h1 class="text-2xl font-black text-white">Cinematic ID // User Profile</h1>
+                <p class="text-gray-400 text-xs font-mono">ID: HIVE-USER-2050-X9 • Status: Elite Explorer</p>
+                
+                <div class="grid grid-cols-3 gap-4 pt-4 border-t border-gray-800 text-left">
+                    <div class="glass-panel p-4 rounded-xl">
+                        <span class="text-xs text-gray-400 block font-mono">XP LEVEL</span>
+                        <span id="profileXp" class="text-xl font-bold text-red-400">Level 5 (1,250 XP)</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl">
+                        <span class="text-xs text-gray-400 block font-mono">BADGES</span>
+                        <span class="text-xl font-bold text-yellow-400">4 / 8 Badges</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl">
+                        <span class="text-xs text-gray-400 block font-mono">MEMORIES</span>
+                        <span id="profileMemoriesCount" class="text-xl font-bold text-cyan-400">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modals -->
+    <div id="holoCommandModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="relative w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full border border-red-500/30 animate-spin-slow"></div>
+            <div class="w-20 h-20 rounded-full glass-panel flex flex-col items-center justify-center text-center cursor-pointer shadow-2xl z-10 border border-red-500/50" onclick="toggleHoloCommandCenter()">
+                <i data-lucide="x" class="w-6 h-6 text-red-500"></i>
+                <span class="text-[9px] font-mono text-gray-300 mt-0.5">CLOSE</span>
+            </div>
+            <button onclick="switchMainView('hub'); toggleHoloCommandCenter();" class="absolute -top-4 left-1/2 -translate-x-1/2 glass-panel px-4 py-2 rounded-full text-xs font-medium text-red-400 border border-red-400/50 cursor-pointer">Hub</button>
+            <button onclick="switchMainView('galaxy'); toggleHoloCommandCenter();" class="absolute top-1/4 -right-6 glass-panel px-4 py-2 rounded-full text-xs font-medium text-purple-400 border border-purple-400/50 cursor-pointer">Galaxy</button>
+            <button onclick="switchMainView('timeline'); toggleHoloCommandCenter();" class="absolute -bottom-4 right-6 glass-panel px-4 py-2 rounded-full text-xs font-medium text-emerald-400 border border-emerald-400/50 cursor-pointer">Time-Travel</button>
+            <button onclick="switchMainView('universe'); toggleHoloCommandCenter();" class="absolute -bottom-4 left-6 glass-panel px-4 py-2 rounded-full text-xs font-medium text-amber-400 border border-amber-400/50 cursor-pointer">My Universe</button>
+            <button onclick="switchMainView('vault'); toggleHoloCommandCenter();" class="absolute top-1/4 -left-6 glass-panel px-4 py-2 rounded-full text-xs font-medium text-cyan-400 border border-cyan-400/50 cursor-pointer">Memory Vault</button>
+        </div>
+    </div>
+
+    <div id="movieScannerModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-2xl w-full rounded-2xl p-6 sm:p-8 relative border border-red-500/50 shadow-2xl overflow-hidden">
+            <div id="scannerLaser" class="absolute inset-x-0 h-1 bg-red-500 shadow-[0_0_20px_#ef4444] opacity-0 pointer-events-none transition-all"></div>
+            <button onclick="closeScannerModal()" class="absolute top-4 right-4 p-2 rounded-full bg-gray-800 text-gray-400 hover:text-white transition-all z-20 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div id="scannerModalContent" class="space-y-6"></div>
+        </div>
+    </div>
+
+    <div id="memoryModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-md w-full rounded-2xl p-6 relative border border-cyan-500/50 space-y-4">
+            <h3 class="text-lg font-bold text-cyan-400">Add Movie Memory</h3>
+            <input type="text" id="memTitle" placeholder="Movie Title" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white">
+            <input type="date" id="memDate" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white">
+            <textarea id="memNotes" placeholder="Personal Notes & Favorite Moments..." class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white h-24"></textarea>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeAddMemoryModal()" class="px-4 py-2 bg-gray-800 text-xs rounded-lg text-gray-300 cursor-pointer">Cancel</button>
+                <button onclick="saveMemory()" class="px-4 py-2 bg-cyan-600 text-xs rounded-lg text-white font-semibold cursor-pointer">Save Memory</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="movieModal" class="fixed inset-0 bg-black/90 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div id="modalContainer" class="rounded-2xl max-w-3xl w-full p-6 relative max-h-[90vh] overflow-y-auto transition-all duration-500 shadow-2xl glass-panel">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl font-bold bg-gray-800/80 w-8 h-8 rounded-full flex items-center justify-center z-10 cursor-pointer">✕</button>
+            <div class="flex flex-col sm:flex-row gap-6">
+                <img id="modalPoster" src="" alt="Poster" class="w-full sm:w-44 h-64 object-cover rounded-xl border border-white/15 shadow-2xl flex-shrink-0">
+                <div class="flex flex-col justify-between flex-1">
+                    <div>
+                        <h2 id="modalTitle" class="text-2xl font-bold text-white"></h2>
+                        <div class="flex flex-wrap items-center gap-2 text-xs text-gray-300 mt-2">
+                            <span id="modalYear" class="bg-black/50 px-2.5 py-1 rounded"></span>
+                            <span id="modalGenre" class="bg-black/50 px-2.5 py-1 rounded"></span>
+                            <span id="modalRating" class="text-yellow-400 font-semibold bg-black/50 px-2.5 py-1 rounded"></span>
+                            <span id="modalRuntime" class="bg-black/50 px-2.5 py-1 rounded"></span>
+                        </div>
+                        <p id="modalDesc" class="text-sm text-gray-200 mt-3 leading-relaxed"></p>
+                        <div class="mt-4 pt-3 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-300">
+                            <div><strong class="text-white">Director:</strong> <span id="modalDirector">-</span></div>
+                            <div><strong class="text-white">Language:</strong> <span id="modalLanguage">-</span></div>
+                            <div class="col-span-full"><strong class="text-white">Cast:</strong> <span id="modalCast">-</span></div>
+                        </div>
+                        <div class="mt-4 flex gap-2 flex-wrap">
+                            <button id="modalUniverseBtn" onclick="toggleCurrentMovieUniverse()" class="px-4 py-2 rounded-xl bg-gray-800 hover:bg-red-600 text-xs font-semibold text-white transition flex items-center gap-1.5 cursor-pointer">
+                                <i data-lucide="bookmark" class="w-4 h-4"></i> <span id="modalUniverseText">Add to My Universe</span>
+                            </button>
+                            <button onclick="toggleWatchedStatusModal()" id="modalWatchedBtn" class="px-4 py-2 rounded-xl bg-gray-800 hover:bg-emerald-600 text-xs font-semibold text-white transition flex items-center gap-1.5 cursor-pointer">
+                                <i data-lucide="check-circle" class="w-4 h-4"></i> <span id="modalWatchedText">Mark Watched</span>
+                            </button>
+                            <button onclick="togglePersonalCinemaMode()" class="px-4 py-2 rounded-xl bg-purple-800 hover:bg-purple-600 text-xs font-semibold text-white transition flex items-center gap-1.5 cursor-pointer">
+                                🎬 Private Theater
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6">
+                <h4 class="text-sm font-semibold text-gray-300 mb-3">Movie Screenshots</h4>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <img id="modalScreen1" src="" class="rounded-lg object-cover h-28 w-full border border-white/10 shadow">
+                    <img id="modalScreen2" src="" class="rounded-lg object-cover h-28 w-full border border-white/10 shadow">
+                    <img id="modalScreen3" src="" class="rounded-lg object-cover h-28 w-full border border-white/10 shadow">
+                    <img id="modalScreen4" src="" class="rounded-lg object-cover h-28 w-full border border-white/10 shadow">
+                    <img id="modalScreen5" src="" class="rounded-lg object-cover h-28 w-full border border-white/10 shadow col-span-2 sm:col-span-1">
+                </div>
+            </div>
+            <div class="mt-6">
+                <h4 class="text-sm font-semibold text-gray-300 mb-3">Download Quality Options</h4>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <a id="btn480p" href="#" target="_blank" class="text-center bg-black/50 hover:bg-red-600 text-gray-200 py-2.5 rounded-xl transition text-xs font-semibold shadow">📥 480p SD</a>
+                    <a id="btn720p" href="#" target="_blank" class="text-center bg-black/50 hover:bg-red-600 text-gray-200 py-2.5 rounded-xl transition text-xs font-semibold shadow">📥 720p HD</a>
+                    <a id="btn1080p" href="#" target="_blank" class="text-center bg-black/50 hover:bg-red-600 text-gray-200 py-2.5 rounded-xl transition text-xs font-semibold shadow">📥 1080p FHD</a>
+                    <a id="btn2160p" href="#" target="_blank" class="text-center bg-black/50 hover:bg-red-600 text-gray-200 py-2.5 rounded-xl transition text-xs font-semibold shadow">📥 2160p 4K</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Engine -->
+    <script>
+        let userUniverse = JSON.parse(localStorage.getItem('flixhive_universe')) || { 
+            genres: {}, 
+            watched: [], 
+            universeSaved: ["Pirates of the Caribbean: The Curse of the Black Pearl"],
+            memories: []
+        };
+
+        function saveUniverseState() {
+            localStorage.setItem('flixhive_universe', JSON.stringify(userUniverse));
+            updateUniverseStats();
+        }
+
+        function updateUniverseStats() {
+            const watchedEl = document.getElementById('statWatchedCount');
+            const universeEl = document.getElementById('statUniverseCount');
+            const memCountEl = document.getElementById('profileMemoriesCount');
+            if(watchedEl) watchedEl.innerText = userUniverse.watched.length;
+            if(universeEl) universeEl.innerText = userUniverse.universeSaved.length;
+            if(memCountEl) memCountEl.innerText = (userUniverse.memories || []).length;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initAdvancedCinematicApp();
+            setupSearchListeners();
+            renderMemoryVault();
+            lucide.createIcons();
+        });
+
+        function switchMainView(viewId) {
+            const views = ['hub', 'galaxy', 'timeline', 'universe', 'vault', 'id'];
+            views.forEach(v => {
+                const el = document.getElementById('view' + v.charAt(0).toUpperCase() + v.slice(1));
+                if(el) el.classList.add('hidden');
+                const nav = document.getElementById('nav' + v.charAt(0).toUpperCase() + v.slice(1));
+                if(nav) {
+                    nav.classList.remove('bg-red-600', 'text-white', 'neon-glow-red');
+                    nav.classList.add('bg-gray-800', 'text-gray-300');
+                }
+            });
+
+            const target = document.getElementById('view' + viewId.charAt(0).toUpperCase() + viewId.slice(1));
+            if(target) {
+                target.classList.remove('hidden');
+            }
+
+            const activeNav = document.getElementById('nav' + viewId.charAt(0).toUpperCase() + viewId.slice(1));
+            if(activeNav) {
+                activeNav.classList.remove('bg-gray-800', 'text-gray-300');
+                activeNav.classList.add('bg-red-600', 'text-white', 'neon-glow-red');
+            }
+
+            if(viewId === 'galaxy') renderGalaxyView();
+            if(viewId === 'timeline') renderTimelineView(2024);
+            if(viewId === 'universe') renderUniverseView();
+            if(viewId === 'vault') renderMemoryVault();
+            lucide.createIcons();
+        }
+
+        function toggleHoloCommandCenter() {
+            const modal = document.getElementById('holoCommandModal');
+            if(modal) modal.classList.toggle('hidden');
+            lucide.createIcons();
+        }
+
+        function openCinematicRadar() {
+            const modal = document.getElementById('movieScannerModal');
+            const laser = document.getElementById('scannerLaser');
+            const content = document.getElementById('scannerModalContent');
+            if(!modal) return;
+            modal.classList.remove('hidden');
+            if(laser) {
+                laser.style.top = '0%';
+                laser.style.opacity = '1';
+                setTimeout(() => { laser.style.top = '100%'; }, 50);
+            }
+
+            setTimeout(() => {
+                if(laser) laser.style.opacity = '0';
+                if(content) {
+                    content.innerHTML = `
+                        <div class="space-y-4">
+                            <span class="px-2.5 py-1 rounded-md text-[10px] font-mono bg-purple-500/25 text-purple-300 border border-purple-500/40 uppercase">CINEMATIC RADAR // INTELLIGENCE SCAN</span>
+                            <h2 class="text-2xl font-black text-white">Database Cluster Analysis</h2>
+                            <div class="grid grid-cols-2 gap-4 text-xs font-mono">
+                                <div class="glass-panel p-3 rounded-xl border border-purple-500/30">
+                                    <span class="text-gray-400 block">TOTAL VERIFIED NODES</span>
+                                    <span class="text-2xl font-bold text-white">3 Masterpieces</span>
+                                </div>
+                                <div class="glass-panel p-3 rounded-xl border border-purple-500/30">
+                                    <span class="text-gray-400 block">PRIMARY GENRE</span>
+                                    <span class="text-2xl font-bold text-red-400">Action / Sci-Fi</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-end pt-2">
+                                <button onclick="closeScannerModal()" class="px-5 py-2 rounded-xl bg-purple-600 text-white text-xs font-semibold cursor-pointer">Close Radar</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }, 500);
+        }
+
+        function startVoiceRecognition() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('Voice Command Deck requires Web Speech API support.');
+                return;
+            }
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            
+            recognition.onstart = () => { alert('🎙️ Listening for voice command...'); };
+            recognition.onresult = (event) => {
+                const speechText = event.results[0][0].transcript.toLowerCase();
+                const searchInput = document.getElementById('searchInput');
+                if(searchInput) {
+                    searchInput.value = speechText;
+                    performSearch();
+                }
+            };
+            recognition.start();
+        }
+
+        function openAddMemoryModal() {
+            const m = document.getElementById('memoryModal');
+            if(m) m.classList.remove('hidden');
+        }
+        function closeAddMemoryModal() {
+            const m = document.getElementById('memoryModal');
+            if(m) m.classList.add('hidden');
+        }
+        function saveMemory() {
+            const title = document.getElementById('memTitle').value.trim();
+            const date = document.getElementById('memDate').value;
+            const notes = document.getElementById('memNotes').value.trim();
+            if(!title) { alert('Please enter a movie title'); return; }
+
+            if(!userUniverse.memories) userUniverse.memories = [];
+            userUniverse.memories.push({ title, date, notes });
+            saveUniverseState();
+            closeAddMemoryModal();
+            renderMemoryVault();
+        }
+        function renderMemoryVault() {
+            const grid = document.getElementById('memoryVaultGrid');
+            if(!grid) return;
+            const mems = userUniverse.memories || [];
+            if(mems.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400">No memories saved yet. Click '+ Add Memory' to record your notes.</div>`;
+                return;
+            }
+            let html = '';
+            mems.forEach(m => {
+                html += `
+                    <div class="glass-panel p-5 rounded-2xl border border-cyan-500/30 space-y-2 shadow-xl">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-white text-base">${m.title}</h3>
+                            <span class="text-[10px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">${m.date || 'Recent'}</span>
+                        </div>
+                        <p class="text-xs text-gray-300 leading-relaxed">${m.notes || 'No personal notes recorded.'}</p>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function togglePersonalCinemaMode() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Error enabling fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        function triggerInfiniteDiscovery() {
+            const cards = document.querySelectorAll('.card-3d-wrapper');
+            cards.forEach(c => c.style.display = 'block');
+            alert('🚀 Infinite Discovery: Shuffled Exploration Matrix Loaded!');
+        }
+
+        function triggerMovieScanner(event, movieTitle) {
+            if(event) event.stopPropagation();
+            const cards = document.querySelectorAll('.movie-card');
+            let mData = null;
+            cards.forEach(c => { if(c.dataset.title === movieTitle) mData = c.dataset; });
+            if(!mData) return;
+
+            userUniverse.genres[mData.genre] = (userUniverse.genres[mData.genre] || 0) + 1;
+            saveUniverseState();
+
+            const modal = document.getElementById('movieScannerModal');
+            const laser = document.getElementById('scannerLaser');
+            const content = document.getElementById('scannerModalContent');
+            if(!modal) return;
+            modal.classList.remove('hidden');
+            if(laser) {
+                laser.style.top = '0%';
+                laser.style.opacity = '1';
+                setTimeout(() => { laser.style.top = '100%'; }, 50);
+            }
+
+            setTimeout(() => {
+                if(laser) laser.style.opacity = '0';
+                if(content) {
+                    content.innerHTML = `
+                        <div class="space-y-6">
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-red-500/30 pb-4">
+                                <div>
+                                    <span class="px-2.5 py-1 rounded-md text-[10px] font-mono bg-red-500/25 text-red-300 border border-red-500/40 uppercase">CLASSIFIED DOSSIER</span>
+                                    <h2 class="text-2xl font-black text-white mt-1">${mData.title}</h2>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xl font-bold font-mono text-yellow-400">★ ${mData.rating} <span class="text-xs text-gray-400">/10</span></span>
+                                    <span class="text-[10px] block text-red-400 font-mono">STATUS: VERIFIED</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
+                                <div class="glass-panel p-3 rounded-xl border border-red-500/20">
+                                    <span class="text-gray-400 block">GENRE / ERA</span>
+                                    <span class="text-red-300 font-bold">${mData.cat} (${mData.year})</span>
+                                </div>
+                                <div class="glass-panel p-3 rounded-xl border border-red-500/20">
+                                    <span class="text-gray-400 block">DURATION</span>
+                                    <span class="text-purple-300 font-bold">${mData.runtime}</span>
+                                </div>
+                                <div class="glass-panel p-3 rounded-xl border border-red-500/20">
+                                    <span class="text-gray-400 block">DIRECTOR</span>
+                                    <span class="text-emerald-300 font-bold">${mData.director}</span>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <h4 class="text-sm font-bold text-red-400 font-mono">&gt; SYNOPSIS ANALYSIS</h4>
+                                <p class="text-sm text-gray-300 leading-relaxed">${mData.desc}</p>
+                            </div>
+                            <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-800">
+                                <button onclick="closeScannerModal()" class="px-5 py-2.5 rounded-xl glass-panel text-gray-300 hover:text-white text-xs font-medium border border-gray-700 cursor-pointer">Close Dossier</button>
+                                <button onclick="closeScannerModal(); openModalFromTitle('${mData.title}');" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow-lg cursor-pointer">Initialize Stream</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                lucide.createIcons();
+            }, 600);
+        }
+
+        function closeScannerModal() {
+            const m = document.getElementById('movieScannerModal');
+            if(m) m.classList.add('hidden');
+        }
+
+        function renderGalaxyView() {
+            const container = document.getElementById('galaxySectorsContainer');
+            if(!container) return;
+            const cards = Array.from(document.querySelectorAll('.movie-card'));
+            const sectors = { 'Action': [], 'Sci-Fi': [], 'Adventure': [] };
+            cards.forEach(c => {
+                const g = c.dataset.genre.toLowerCase();
+                if(g.includes('action')) sectors['Action'].push(c.dataset);
+                else if(g.includes('sci-fi')) sectors['Sci-Fi'].push(c.dataset);
+                else sectors['Adventure'].push(c.dataset);
+            });
+
+            let html = '';
+            for(const [sectorName, movieList] of Object.entries(sectors)) {
+                if(movieList.length === 0) continue;
+                html += `
+                    <div class="glass-panel rounded-2xl p-6 border border-gray-800 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-lg text-red-400 flex items-center gap-2">
+                                <i data-lucide="globe" class="w-5 h-5 text-purple-400"></i>
+                                <span>${sectorName} Nebula</span>
+                            </h3>
+                            <span class="text-xs font-mono text-gray-400">${movieList.length} Stars</span>
+                        </div>
+                        <div class="space-y-3 pt-2">
+                            ${movieList.map(m => `
+                                <div onclick="openModalFromTitle('${m.title}')" class="p-3 rounded-xl bg-gray-900/60 border border-gray-800 hover:border-red-500/60 cursor-pointer transition-all flex items-center justify-between group">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_10px_#ef4444]"></div>
+                                        <div>
+                                            <h4 class="text-sm font-semibold text-white group-hover:text-red-400">${m.title}</h4>
+                                            <span class="text-[10px] text-gray-400 font-mono">${m.year} // Rating: ${m.rating}</span>
+                                        </div>
+                                    </div>
+                                    <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function renderTimelineView(year) {
+            const yr = parseInt(year);
+            const disp = document.getElementById('timelineDisplayYear');
+            if(disp) disp.innerText = yr;
+            const cards = Array.from(document.querySelectorAll('.movie-card'));
+            const filtered = cards.filter(c => Math.abs(parseInt(c.dataset.year) - yr) <= 25);
+            const grid = document.getElementById('timelineResultsGrid');
+            if(!grid) return;
+
+            let html = '';
+            filtered.forEach(c => {
+                const d = c.dataset;
+                html += `
+                    <div class="glass-panel rounded-xl overflow-hidden cursor-pointer group flex flex-col shadow-lg border border-gray-800 hover:border-red-500" onclick="openModalFromTitle('${d.title}')">
+                        <div class="aspect-[2/3] bg-gray-800 relative overflow-hidden">
+                            <img src="${d.poster}" alt="${d.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <span class="absolute top-2 right-2 bg-black/70 text-xs px-2 py-1 rounded text-yellow-400">★ ${d.rating}</span>
+                        </div>
+                        <div class="p-3">
+                            <h3 class="font-semibold text-sm truncate text-white">${d.title}</h3>
+                            <p class="text-xs text-gray-400">${d.year} • ${d.language}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function updateTimelineYear(val) { renderTimelineView(val); }
+
+        function renderNeuralRecommendations() {
+            const grid = document.getElementById('neuralRecGrid');
+            if(!grid) return;
+            const cards = Array.from(document.querySelectorAll('.movie-card'));
+            let html = '';
+            cards.slice(0, 4).forEach(c => {
+                const d = c.dataset;
+                html += `
+                    <div onclick="openModalFromTitle('${d.title}')" class="glass-panel p-2 rounded-lg cursor-pointer hover:border-red-500 flex items-center gap-3 transition">
+                        <img src="${d.poster}" class="w-12 h-16 object-cover rounded">
+                        <div class="overflow-hidden">
+                            <h4 class="text-xs font-bold text-white truncate">${d.title}</h4>
+                            <span class="text-[10px] text-red-400 font-mono">Match: 97.4%</span>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function renderUniverseView() {
+            const grid = document.getElementById('universeMoviesGrid');
+            if(!grid) return;
+            const cards = Array.from(document.querySelectorAll('.movie-card'));
+            const savedCards = cards.filter(c => userUniverse.universeSaved.includes(c.dataset.title) || userUniverse.watched.includes(c.dataset.title));
+
+            if(savedCards.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-16 text-center text-gray-400">Your universe is empty. Add movies using 'Add to My Universe' inside movie details.</div>`;
+                updateUniverseStats();
+                return;
+            }
+
+            let html = '';
+            savedCards.forEach(c => {
+                const d = c.dataset;
+                const isWatched = userUniverse.watched.includes(d.title);
+                html += `
+                    <div class="glass-panel rounded-xl overflow-hidden cursor-pointer group flex flex-col shadow-lg border border-gray-800 hover:border-amber-400" onclick="openModalFromTitle('${d.title}')">
+                        <div class="aspect-[2/3] bg-gray-800 relative overflow-hidden">
+                            <img src="${d.poster}" alt="${d.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <span class="absolute top-2 right-2 bg-black/70 text-xs px-2 py-1 rounded text-yellow-400">★ ${d.rating}</span>
+                            ${isWatched ? '<span class="absolute bottom-2 left-2 bg-emerald-600 text-white text-[9px] px-2 py-0.5 rounded font-mono">Watched</span>' : ''}
+                        </div>
+                        <div class="p-3">
+                            <h3 class="font-semibold text-sm truncate text-white">${d.title}</h3>
+                            <p class="text-xs text-gray-400">${d.year}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+            updateUniverseStats();
+        }
+
+        let activeModalTitle = null;
+        function toggleCurrentMovieUniverse() {
+            if(!activeModalTitle) return;
+            const idx = userUniverse.universeSaved.indexOf(activeModalTitle);
+            if(idx > -1) {
+                userUniverse.universeSaved.splice(idx, 1);
+                document.getElementById('modalUniverseText').innerText = "Add to My Universe";
+            } else {
+                userUniverse.universeSaved.push(activeModalTitle);
+                document.getElementById('modalUniverseText').innerText = "Saved in Universe ✓";
+            }
+            saveUniverseState();
+        }
+
+        function toggleWatchedStatusModal() {
+            if(!activeModalTitle) return;
+            const idx = userUniverse.watched.indexOf(activeModalTitle);
+            if(idx > -1) {
+                userUniverse.watched.splice(idx, 1);
+                document.getElementById('modalWatchedText').innerText = "Mark Watched";
+            } else {
+                userUniverse.watched.push(activeModalTitle);
+                document.getElementById('modalWatchedText').innerText = "Watched ✓";
+            }
+            saveUniverseState();
+        }
+
+        function getGenreFontClass(genreString) {
+            const str = String(genreString || '').toLowerCase();
+            if (str.includes('horror')) return 'font-horror';
+            if (str.includes('sci-fi') || str.includes('cyberpunk')) return 'font-scifi';
+            if (str.includes('fantasy')) return 'font-fantasy';
+            if (str.includes('action')) return 'font-action';
+            if (str.includes('romance')) return 'font-romance';
+            if (str.includes('comedy')) return 'font-comedy';
+            return 'font-default';
+        }
+
+        function getModalThemeClass(genreString) {
+            const str = String(genreString || '').toLowerCase();
+            if (str.includes('horror')) return 'bg-gradient-to-br from-red-950 via-gray-900 to-black border-red-600/50';
+            if (str.includes('sci-fi')) return 'bg-gradient-to-br from-blue-950 via-gray-900 to-black border-blue-600/50';
+            return 'bg-gradient-to-br from-gray-900 via-gray-950 to-black border-gray-700';
+        }
+
+        let currentSlideIndex = 0;
+        let slideInterval = null;
+
+        function initAdvancedCinematicApp() {
+            const cards = document.querySelectorAll('.movie-card');
+            const filmStripContainer = document.getElementById('filmStripContainer');
+            let filmStripHTML = '';
+
+            cards.forEach(card => {
+                const genre = card.getAttribute('data-genre');
+                const titleEl = card.querySelector('.movie-title');
+                if (titleEl) titleEl.classList.add(getGenreFontClass(genre));
+
+                const d = card.dataset;
+                filmStripHTML += `
+                    <div onclick="openMovieModalFromData(this.dataset)" data-title="${d.title}" data-genre="${d.genre}" data-year="${d.year}" data-rating="${d.rating}" data-cat="${d.cat}" data-desc="${d.desc}" data-cast="${d.cast}" data-director="${d.director}" data-runtime="${d.runtime}" data-language="${d.language}" data-poster="${d.poster}" data-s1="${d.s1}" data-s2="${d.s2}" data-s3="${d.s3}" data-s4="${d.s4}" data-s5="${d.s5}" data-l480="${d.l480}" data-l720="${d.l720}" data-l1080="${d.l1080}" data-l2160="${d.l2160}" class="flex-shrink-0 w-36 h-52 rounded-lg overflow-hidden cursor-pointer group relative border border-white/10 hover:border-red-500 transition shadow-md">
+                        <img src="${d.poster}" alt="${d.title}" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex items-end p-2">
+                            <span class="text-xs font-bold text-white truncate">${d.title}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (filmStripContainer) filmStripContainer.innerHTML = filmStripHTML;
+
+            const sliderContainer = document.getElementById('heroSliderContainer');
+            const dotsContainer = document.getElementById('sliderDots');
+            let slidesHTML = '', dotsHTML = '';
+
+            cards.forEach((card, index) => {
+                const d = card.dataset;
+                const fontClass = getGenreFontClass(d.genre);
+                const activeClass = index === 0 ? 'active' : '';
+
+                slidesHTML += `
+                    <div class="hero-slide ${activeClass} absolute inset-0 w-full h-full">
+                        <img src="${d.s1 || d.poster}" alt="${d.title}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/60 to-transparent"></div>
+                        <div class="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/50 to-transparent"></div>
+                        <div class="absolute bottom-8 left-6 sm:left-12 max-w-xl z-10">
+                            <span class="bg-red-600 text-white text-xs px-2.5 py-1 rounded-full font-semibold uppercase tracking-wider mb-2 inline-block neon-glow-red">Featured • ${d.year}</span>
+                            <h1 class="text-3xl sm:text-5xl font-extrabold text-white mb-3 drop-shadow-lg ${fontClass}">${d.title}</h1>
+                            <p class="text-gray-300 text-xs sm:text-sm line-clamp-2 mb-4 drop-shadow">${d.desc}</p>
+                            <button onclick="openModalFromTitle('${d.title}')" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg transition flex items-center gap-2 neon-glow-red cursor-pointer">▶ Details</button>
+                        </div>
+                    </div>
+                `;
+                dotsHTML += `<button onclick="currentSlide(${index})" class="slide-dot w-3 h-3 rounded-full ${index === 0 ? 'bg-red-600 w-6' : 'bg-gray-600'} transition-all duration-300 cursor-pointer"></button>`;
+            });
+
+            if(sliderContainer) sliderContainer.innerHTML = slidesHTML;
+            if(dotsContainer) dotsContainer.innerHTML = dotsHTML;
+            startAutoSlide();
+            renderNeuralRecommendations();
+            updateUniverseStats();
+        }
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.hero-slide');
+            const dots = document.querySelectorAll('.slide-dot');
+            if (slides.length === 0) return;
+            currentSlideIndex = index >= slides.length ? 0 : index < 0 ? slides.length - 1 : index;
+
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => { d.classList.remove('bg-red-600', 'w-6'); d.classList.add('bg-gray-600', 'w-3'); });
+
+            slides[currentSlideIndex].classList.add('active');
+            dots[currentSlideIndex].classList.remove('bg-gray-600', 'w-3');
+            dots[currentSlideIndex].classList.add('bg-red-600', 'w-6');
+        }
+
+        function nextSlide() { showSlide(currentSlideIndex + 1); resetAutoSlide(); }
+        function prevSlide() { showSlide(currentSlideIndex - 1); resetAutoSlide(); }
+        function currentSlide(index) { showSlide(index); resetAutoSlide(); }
+        function startAutoSlide() { slideInterval = setInterval(() => { showSlide(currentSlideIndex + 1); }, 5000); }
+        function resetAutoSlide() { clearInterval(slideInterval); startAutoSlide(); }
+
+        function surpriseMe() {
+            const cards = document.querySelectorAll('.card-3d-wrapper');
+            const visibleCards = Array.from(cards).filter(c => c.style.display !== 'none');
+            const targetList = visibleCards.length > 0 ? visibleCards : cards;
+            const randomWrapper = targetList[Math.floor(Math.random() * targetList.length)];
+            const movieCard = randomWrapper.querySelector('.movie-card');
+            if (movieCard) openMovieModal(movieCard.dataset);
+        }
+
+        function filterByMood(moodType) {
+            const mood = String(moodType || '').toLowerCase();
+            const wrappers = document.querySelectorAll('.card-3d-wrapper');
+            const label = document.getElementById('activeGenreLabel');
+            if(label) label.innerText = 'Showing Mood: ' + mood.toUpperCase();
+
+            wrappers.forEach(wrap => {
+                const card = wrap.querySelector('.movie-card');
+                const genre = (card.getAttribute('data-genre') || '').toLowerCase();
+                let match = (mood === 'happy' && (genre.includes('comedy') || genre.includes('animation'))) ||
+                            (mood === 'romantic' && genre.includes('romance')) ||
+                            (mood === 'scary' && genre.includes('horror')) ||
+                            (mood === 'action' && (genre.includes('action') || genre.includes('thriller'))) ||
+                            (mood === 'scifi' && genre.includes('sci-fi')) ||
+                            (mood === 'drama' && genre.includes('drama'));
+                wrap.style.display = match ? 'block' : 'none';
+            });
+        }
+
+        function filterByLanguage(langType) {
+            const lang = String(langType || '').toLowerCase();
+            const wrappers = document.querySelectorAll('.card-3d-wrapper');
+            const label = document.getElementById('activeGenreLabel');
+            if(label) label.innerText = 'Showing Language: ' + (lang === 'all' ? 'All' : lang.toUpperCase());
+
+            wrappers.forEach(wrap => {
+                const card = wrap.querySelector('.movie-card');
+                const movieLang = (card.getAttribute('data-language') || '').toLowerCase();
+                const match = lang === 'all' || movieLang.includes(lang);
+                wrap.style.display = match ? 'block' : 'none';
+            });
+        }
+
+        /* --- BULLETPROOF SEARCH SYSTEM --- */
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            if(!searchInput) return;
+            const term = searchInput.value.toLowerCase().trim();
+            
+            const wrappers = document.querySelectorAll('.card-3d-wrapper');
+            wrappers.forEach(wrap => {
+                const card = wrap.querySelector('.movie-card');
+                if(!card) return;
+                const title = (card.getAttribute('data-title') || '').toLowerCase();
+                const genre = (card.getAttribute('data-genre') || '').toLowerCase();
+                const combined = title + ' ' + genre;
+                
+                if (term === '' || combined.includes(term)) {
+                    wrap.style.display = 'block';
+                } else {
+                    wrap.style.display = 'none';
+                }
+            });
+        }
+
+        function setupSearchListeners() {
+            const searchInput = document.getElementById('searchInput');
+            const searchGoBtn = document.getElementById('searchGoBtn');
+
+            if(searchInput) {
+                searchInput.addEventListener('input', performSearch);
+                searchInput.addEventListener('keyup', function(e) {
+                    if(e.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+            }
+
+            if(searchGoBtn) {
+                searchGoBtn.addEventListener('click', performSearch);
+            }
+        }
+
+        let isDarkMode = true;
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.className = isDarkMode ? "bg-gray-950 text-gray-100 font-sans min-h-screen relative" : "bg-gray-100 text-gray-900 font-sans min-h-screen relative";
+            const btn = document.getElementById('themeToggleBtn');
+            if(btn) btn.innerText = isDarkMode ? '🌙' : '☀️';
+        }
+
+        function filterLatest() {
+            const label = document.getElementById('activeGenreLabel');
+            if(label) label.innerText = 'Showing: Latest Updates';
+            document.querySelectorAll('.card-3d-wrapper').forEach(wrap => {
+                const card = wrap.querySelector('.movie-card');
+                wrap.style.display = card.getAttribute('data-latest') === 'true' ? 'block' : 'none';
+            });
+        }
+
+        function filterByYear(yearVal) {
+            const year = String(yearVal || '');
+            const label = document.getElementById('activeGenreLabel');
+            if(label) label.innerText = 'Showing Year: ' + year;
+            document.querySelectorAll('.card-3d-wrapper').forEach(wrap => {
+                const card = wrap.querySelector('.movie-card');
+                wrap.style.display = year === 'all' || card.getAttribute('data-year') === year ? 'block' : 'none';
+            });
+        }
+
+        function resetAllFilters() {
+            const searchInput = document.getElementById('searchInput');
+            if(searchInput) searchInput.value = '';
+            const yF = document.getElementById('yearFilter');
+            const lF = document.getElementById('langFilter');
+            const label = document.getElementById('activeGenreLabel');
+            if(yF) yF.value = 'all';
+            if(lF) lF.value = 'all';
+            if(label) label.innerText = 'Showing: All';
+            document.querySelectorAll('.card-3d-wrapper').forEach(c => c.style.display = 'block');
+        }
+
+        function filterCategory(genreName, btnElement) {
+            const genre = String(genreName || '');
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.remove('bg-red-600', 'text-white', 'neon-glow-red');
+                b.classList.add('bg-gray-800', 'text-gray-200');
+            });
+            if (btnElement) {
+                btnElement.classList.remove('bg-gray-800', 'text-gray-200');
+                btnElement.classList.add('bg-red-600', 'text-white', 'neon-glow-red');
+            }
+            const label = document.getElementById('activeGenreLabel');
+            if(label) label.innerText = 'Showing: ' + genre;
+            
+            document.querySelectorAll('.card-3d-wrapper').forEach(wrap => {
+                const card = wrap.querySelector('.movie-card');
+                const genreList = (card.getAttribute('data-genre') || '').toLowerCase();
+                wrap.style.display = genre === 'all' || genreList.includes(genre.toLowerCase()) ? 'block' : 'none';
+            });
+        }
+
+        function openMovieModal(d) {
+            activeModalTitle = d.title;
+            document.getElementById('modalTitle').innerText = d.title || '';
+            document.getElementById('modalTitle').className = "text-2xl font-bold text-white " + getGenreFontClass(d.genre);
+            document.getElementById('modalContainer').className = "rounded-2xl max-w-3xl w-full p-6 relative max-h-[90vh] overflow-y-auto transition-all duration-500 shadow-2xl " + getModalThemeClass(d.genre);
+
+            document.getElementById('modalYear').innerText = d.year || '';
+            document.getElementById('modalRating').innerText = '★ ' + (d.rating || '');
+            document.getElementById('modalGenre').innerText = d.cat || '';
+            document.getElementById('modalRuntime').innerText = d.runtime || '2h 00m';
+            document.getElementById('modalDesc').innerText = d.desc || '';
+            document.getElementById('modalDirector').innerText = d.director || 'Not Specified';
+            document.getElementById('modalLanguage').innerText = d.language || 'English';
+            document.getElementById('modalCast').innerText = d.cast || 'Various Artists';
+
+            document.getElementById('modalPoster').src = d.poster || '';
+            document.getElementById('modalScreen1').src = d.s1 || '';
+            document.getElementById('modalScreen2').src = d.s2 || '';
+            document.getElementById('modalScreen3').src = d.s3 || '';
+            document.getElementById('modalScreen4').src = d.s4 || '';
+            document.getElementById('modalScreen5').src = d.s5 || '';
+            
+            document.getElementById('btn480p').href = d.l480 || '#';
+            document.getElementById('btn720p').href = d.l720 || '#';
+            document.getElementById('btn1080p').href = d.l1080 || '#';
+            document.getElementById('btn2160p').href = d.l2160 || '#';
+
+            const isSaved = userUniverse.universeSaved.includes(d.title);
+            const isWatched = userUniverse.watched.includes(d.title);
+            document.getElementById('modalUniverseText').innerText = isSaved ? "Saved in Universe ✓" : "Add to My Universe";
+            document.getElementById('modalWatchedText').innerText = isWatched ? "Watched ✓" : "Mark Watched";
+            
+            document.getElementById('movieModal').classList.remove('hidden');
+        }
+
+        function openMovieModalFromData(dataset) { openMovieModal(dataset); }
+
+        document.addEventListener('click', function(e) {
+            const card = e.target.closest('.movie-card');
+            if (card) openMovieModal(card.dataset);
+        });
+
+        function openModalFromTitle(titleText) {
+            const cards = document.querySelectorAll('.movie-card');
+            cards.forEach(card => {
+                if (card.dataset.title === titleText) openMovieModal(card.dataset);
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('movieModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
