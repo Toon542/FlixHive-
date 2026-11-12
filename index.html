@@ -11,37 +11,56 @@
 
     <!-- Header / Navbar -->
     <header class="border-b border-gray-800 bg-gray-900/80 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <span class="text-2xl font-extrabold tracking-wider text-red-500">Flix<span class="text-white">Hive</span></span>
-            <input type="text" placeholder="Search movies..." class="bg-gray-800 border border-gray-700 rounded-full px-4 py-1.5 text-sm focus:outline-none focus:border-red-500 w-40 sm:w-72">
+            <!-- Search Bar -->
+            <div class="w-full sm:w-96">
+                <input type="text" id="searchInput" placeholder="Search movies by name..." class="w-full bg-gray-800 border border-gray-700 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-red-500 transition">
+            </div>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 py-8">
-        <h2 class="text-xl font-semibold mb-6">Latest Movies</h2>
+        
+        <!-- Hero Section -->
+        <div class="bg-gradient-to-r from-red-900/40 to-gray-900 border border-red-500/20 rounded-2xl p-6 mb-8">
+            <h1 class="text-3xl font-bold mb-2">Welcome to FlixHive</h1>
+            <p class="text-gray-400 text-sm">Search or filter through categories to find your favorite movies instantly.</p>
+        </div>
+
+        <!-- Genre Filters -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none">
+            <button onclick="filterCategory('all')" class="category-btn px-4 py-1.5 rounded-full bg-red-600 text-sm font-medium whitespace-nowrap transition">All</button>
+            <button onclick="filterCategory('Action')" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-sm font-medium whitespace-nowrap transition">Action</button>
+            <button onclick="filterCategory('Sci-Fi')" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-sm font-medium whitespace-nowrap transition">Sci-Fi</button>
+            <button onclick="filterCategory('Thriller')" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-sm font-medium whitespace-nowrap transition">Thriller</button>
+            <button onclick="filterCategory('Animation')" class="category-btn px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-sm font-medium whitespace-nowrap transition">Animation</button>
+        </div>
+
+        <h2 class="text-xl font-semibold mb-6">Explore Movies</h2>
         
         <!-- Movies Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div id="moviesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             
-            <!-- Movie Card 1 (Yahan apni movie ki links aur details daalein) -->
-            <div onclick="openModal(
-                'The Silent City', 
-                '2024', 
-                '7.8', 
-                'Action / Thriller', 
-                'A gripping tale of survival in a futuristic dystopian city where silence is the only law.', 
-                'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=500&q=80', 
-                'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80', 
-                'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80', 
-                'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80', 
-                'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80', 
-                'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80', 
-                'LINK_480P', 
-                'LINK_720P', 
-                'LINK_1080P', 
-                'LINK_2160P'
-            )" class="bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-red-500/50 transition cursor-pointer group flex flex-col">
+            <!-- Movie Card 1 (Note: data-title aur data-genre lagana zaroori hai search/filter ke liye) -->
+            <div class="movie-card bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-red-500/50 transition cursor-pointer group flex flex-col"
+                 data-title="The Silent City" 
+                 data-genre="Action Thriller"
+                 onclick="openModal(
+                    'The Silent City', 
+                    '2024', 
+                    '7.8', 
+                    'Action / Thriller', 
+                    'A gripping tale of survival in a futuristic dystopian city where silence is the only law.', 
+                    'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=500&q=80', 
+                    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80', 
+                    'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80', 
+                    'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80', 
+                    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80', 
+                    'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80', 
+                    'LINK_480P', 'LINK_720P', 'LINK_1080P', 'LINK_2160P'
+                 )">
                 <div class="aspect-[2/3] bg-gray-800 relative overflow-hidden">
                     <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=500&q=80" alt="Poster" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                     <span class="absolute top-2 right-2 bg-black/70 backdrop-blur text-xs px-2 py-1 rounded font-medium text-yellow-400">★ 7.8</span>
@@ -49,6 +68,34 @@
                 <div class="p-3">
                     <h3 class="font-semibold text-sm truncate">The Silent City</h3>
                     <p class="text-xs text-gray-400 mt-0.5">2024 • Action</p>
+                </div>
+            </div>
+
+            <!-- Movie Card 2 (Example ke taur par doosri movie bhi daali hai) -->
+            <div class="movie-card bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-red-500/50 transition cursor-pointer group flex flex-col"
+                 data-title="Cyber Odyssey" 
+                 data-genre="Sci-Fi"
+                 onclick="openModal(
+                    'Cyber Odyssey', 
+                    '2025', 
+                    '8.2', 
+                    'Sci-Fi', 
+                    'An epic journey through virtual reality and cyberspace.', 
+                    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80', 
+                    'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80', 
+                    'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80', 
+                    'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80', 
+                    'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80', 
+                    'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80', 
+                    'LINK_480P', 'LINK_720P', 'LINK_1080P', 'LINK_2160P'
+                 )">
+                <div class="aspect-[2/3] bg-gray-800 relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80" alt="Poster" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    <span class="absolute top-2 right-2 bg-black/70 backdrop-blur text-xs px-2 py-1 rounded font-medium text-yellow-400">★ 8.2</span>
+                </div>
+                <div class="p-3">
+                    <h3 class="font-semibold text-sm truncate">Cyber Odyssey</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">2025 • Sci-Fi</p>
                 </div>
             </div>
 
@@ -91,7 +138,7 @@
                 </div>
             </div>
 
-            <!-- 4 Download Categories (480p, 720p, 1080p, 2160p) -->
+            <!-- 4 Download Categories -->
             <div class="mt-6">
                 <h4 class="text-sm font-semibold text-gray-400 mb-3">Download Quality Options</h4>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -104,8 +151,39 @@
         </div>
     </div>
 
-    <!-- JavaScript for Popup Modal -->
+    <!-- JavaScript for Search, Filter & Modal -->
     <script>
+        // 1. Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.movie-card');
+            
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title').toLowerCase();
+                if (title.includes(term)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // 2. Category Filter Functionality
+        function filterCategory(genre) {
+            const cards = document.querySelectorAll('.movie-card');
+            
+            cards.forEach(card => {
+                const cardGenre = card.getAttribute('data-genre');
+                if (genre === 'all' || cardGenre.includes(genre)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 3. Modal Functions
         function openModal(title, year, rating, genre, desc, poster, s1, s2, s3, s4, s5, link480, link720, link1080, link2160) {
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalYear').innerText = year;
@@ -119,19 +197,6 @@
             document.getElementById('modalScreen4').src = s4;
             document.getElementById('modalScreen5').src = s5;
             
-            // Setting 4 different download links
             document.getElementById('btn480p').href = link480;
             document.getElementById('btn720p').href = link720;
-            document.getElementById('btn1080p').href = link1080;
-            document.getElementById('btn2160p').href = link2160;
-            
-            document.getElementById('movieModal').classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('movieModal').classList.add('hidden');
-        }
-    </script>
-
-</body>
-</html>
+            document
